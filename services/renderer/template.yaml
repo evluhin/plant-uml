@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: PlantUML Renderer Service
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, stg, prod]
+  JWTSecretParameter:
+    Type: String
+    Default: /plantuml/renderer/jwt-secret
+    Description: SSM Parameter path for JWT secret
+
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 1024
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        NODE_ENV: !Ref Environment
+        JWT_SECRET_PARAM: !Ref JWTSecretParameter
+        LOG_PAYLOADS: false
+
+Resources:
+  # PlantUML Layer with JAR and Graphviz
+  PlantUMLLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub plantuml-layer-${Environment}
+      Description: PlantUML JAR and Graphviz binaries
+      ContentUri: layers/plantuml-layer/
+      CompatibleRuntimes:
+        - nodejs20.x
+      CompatibleArchitectures:
+        - x86_64
+    Metadata:
+      BuildMethod: makefile
+
+  # Lambda Function
+  RendererFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub plantuml-renderer-${Environment}
+      CodeUri: .
+      Handler: dist/handler.render
+      Layers:
+        - !Ref PlantUMLLayer
+      Environment:
+        Variables:
+          GRAPHVIZ_DOT: /opt/bin/dot
+          PLANTUML_JAR: /opt/plantuml.jar
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: !Ref JWTSecretParameter
+      Events:
+        RenderApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RendererApi
+            Path: /render
+            Method: post
+        HealthApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RendererApi
+            Path: /health
+            Method: get
+
+  # Health Check Function
+  HealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub plantuml-health-${Environment}
+      CodeUri: .
+      Handler: dist/handlers/health.handler
+      Events:
+        HealthApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RendererApi
+            Path: /health
+            Method: get
+
+  # HTTP API Gateway
+  RendererApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+      CorsConfiguration:
+        AllowOrigins:
+          - "https://*.atlassian.net"
+          - "https://developer.atlassian.com"
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowMethods:
+          - POST
+          - OPTIONS
+        MaxAge: 600
+
+  # CloudWatch Log Group
+  RendererLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/plantuml-renderer-${Environment}
+      RetentionInDays: 14
+
+Outputs:
+  RendererApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${RendererApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+    Export:
+      Name: !Sub plantuml-renderer-url-${Environment}
+  
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt RendererFunction.Arn
+    Export:
+      Name: !Sub plantuml-renderer-arn-${Environment}

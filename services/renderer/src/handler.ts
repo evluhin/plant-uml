@@ -1,0 +1,1 @@
+export { handler as render } from './handlers/render';

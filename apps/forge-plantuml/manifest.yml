@@ -1,0 +1,45 @@
+modules:
+  macro:
+    - key: plantuml-macro
+      title: PlantUML
+      description: Create and edit PlantUML diagrams
+      function: plantuml-resolver
+      render: native
+      parameters:
+        - key: source
+          type: string
+          required: false
+        - key: format
+          type: string
+          required: false
+          default: svg
+        - key: width
+          type: string
+          required: false
+        - key: height
+          type: string
+          required: false
+        - key: title
+          type: string
+          required: false
+        - key: theme
+          type: string
+          required: false
+  function:
+    - key: plantuml-resolver
+      handler: index.render
+    - key: admin-page
+      handler: index.getAdminPage
+permissions:
+  scopes:
+    - read:confluence-content.summary
+    - write:confluence-content
+    - storage:app
+  external:
+    fetch:
+      backend:
+        - '*.amazonaws.com'
+app:
+  id: ari:cloud:ecosystem::app/5cdc958f-0844-4ecf-967b-5ba58b1f2cff
+  runtime:
+    name: nodejs20.x

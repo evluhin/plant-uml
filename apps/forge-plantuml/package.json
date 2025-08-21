@@ -1,0 +1,28 @@
+{
+  "name": "forge-plantuml",
+  "version": "1.0.0",
+  "description": "PlantUML Forge app for Confluence Cloud",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "fmt": "prettier --write src",
+    "clean": "rm -rf dist build node_modules",
+    "tunnel": "forge tunnel"
+  },
+  "dependencies": {
+    "@forge/api": "^2.15.0",
+    "@forge/ui": "^1.10.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.2"
+  }
+}

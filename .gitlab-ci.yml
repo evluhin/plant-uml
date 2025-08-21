@@ -1,0 +1,262 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy_stg
+  - deploy_prod
+  - e2e_test
+
+variables:
+  # Cache configuration
+  PNPM_CACHE_DIR: .pnpm-store
+  SAM_CLI_TELEMETRY: 0
+  
+  # AWS Configuration (set in GitLab CI/CD variables)
+  # AWS_ACCESS_KEY_ID: (set in GitLab)
+  # AWS_SECRET_ACCESS_KEY: (set in GitLab)
+  # AWS_DEFAULT_REGION: us-east-1 (set in GitLab)
+  
+  # Forge Configuration (set in GitLab CI/CD variables)
+  # FORGE_APP_ID: (set in GitLab)
+  # FORGE_API_TOKEN: (set in GitLab)
+  
+  # Environment Configuration
+  # RENDERER_JWT_SECRET_PARAM: /plantuml/renderer/jwt-secret (set in GitLab)
+  # FORGE_ENV_STG: staging (set in GitLab)
+  # FORGE_ENV_PROD: production (set in GitLab)
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .pnpm-store/
+    - services/renderer/.aws-sam/
+
+before_script:
+  - corepack enable
+  - pnpm config set store-dir $PNPM_CACHE_DIR
+  - pnpm install --frozen-lockfile
+
+# Lint Stage
+lint:
+  stage: lint
+  script:
+    - pnpm lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Test Stage
+test:unit:
+  stage: test
+  script:
+    - pnpm test
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    paths:
+      - coverage/
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+test:e2e:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.40.1-focal
+  script:
+    - cd apps/forge-plantuml
+    - pnpm install
+    - pnpm test:ui
+  artifacts:
+    when: always
+    paths:
+      - apps/forge-plantuml/playwright-report/
+      - apps/forge-plantuml/test-results/
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Build Stage
+build:renderer:
+  stage: build
+  image: public.ecr.aws/sam/build-nodejs20.x:latest
+  before_script:
+    - pip install aws-sam-cli
+    - cd services/renderer
+  script:
+    - sam build --cached
+  artifacts:
+    paths:
+      - services/renderer/.aws-sam/
+    expire_in: 1 day
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+build:forge:
+  stage: build
+  script:
+    - cd apps/forge-plantuml
+    - pnpm build
+  artifacts:
+    paths:
+      - apps/forge-plantuml/static/
+    expire_in: 1 day
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Staging Deploy
+deploy:renderer:stg:
+  stage: deploy_stg
+  image: public.ecr.aws/sam/build-nodejs20.x:latest
+  before_script:
+    - pip install aws-sam-cli
+    - cd services/renderer
+  script:
+    - |
+      sam deploy \
+        --config-env stg \
+        --parameter-overrides "Environment=stg JWTSecretParameter=${RENDERER_JWT_SECRET_PARAM}" \
+        --no-confirm-changeset \
+        --no-fail-on-empty-changeset
+    - |
+      RENDERER_URL=$(aws cloudformation describe-stacks \
+        --stack-name plantuml-renderer-stg \
+        --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
+        --output text)
+      echo "RENDERER_URL_STG=${RENDERER_URL}" >> ../deploy.env
+  artifacts:
+    reports:
+      dotenv: services/deploy.env
+  dependencies:
+    - build:renderer
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy:forge:stg:
+  stage: deploy_stg
+  before_script:
+    - npm install -g @forge/cli
+    - cd apps/forge-plantuml
+  script:
+    - forge deploy --environment ${FORGE_ENV_STG} --non-interactive
+    - forge install --product confluence --environment ${FORGE_ENV_STG} --non-interactive
+    - |
+      # Update renderer URL in Forge app settings
+      node -e "
+        const { storage } = require('@forge/api');
+        (async () => {
+          await storage.set('renderer-url', '${RENDERER_URL_STG}');
+          console.log('Updated renderer URL in staging');
+        })();
+      "
+  dependencies:
+    - build:forge
+    - deploy:renderer:stg
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Production Deploy (Manual)
+deploy:renderer:prod:
+  stage: deploy_prod
+  image: public.ecr.aws/sam/build-nodejs20.x:latest
+  before_script:
+    - pip install aws-sam-cli
+    - cd services/renderer
+  script:
+    - |
+      sam deploy \
+        --config-env prod \
+        --parameter-overrides "Environment=prod JWTSecretParameter=${RENDERER_JWT_SECRET_PARAM}" \
+        --no-confirm-changeset \
+        --no-fail-on-empty-changeset
+    - |
+      RENDERER_URL=$(aws cloudformation describe-stacks \
+        --stack-name plantuml-renderer-prod \
+        --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
+        --output text)
+      echo "RENDERER_URL_PROD=${RENDERER_URL}" >> ../deploy.env
+  artifacts:
+    reports:
+      dotenv: services/deploy.env
+  dependencies:
+    - build:renderer
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  environment:
+    name: production
+
+deploy:forge:prod:
+  stage: deploy_prod
+  before_script:
+    - npm install -g @forge/cli
+    - cd apps/forge-plantuml
+  script:
+    - forge deploy --environment ${FORGE_ENV_PROD} --non-interactive
+    - forge install --product confluence --environment ${FORGE_ENV_PROD} --non-interactive
+    - |
+      # Update renderer URL in Forge app settings
+      node -e "
+        const { storage } = require('@forge/api');
+        (async () => {
+          await storage.set('renderer-url', '${RENDERER_URL_PROD}');
+          console.log('Updated renderer URL in production');
+        })();
+      "
+  dependencies:
+    - build:forge
+    - deploy:renderer:prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  environment:
+    name: production
+
+# End-to-End Test (Post-Deploy)
+e2e:staging:
+  stage: e2e_test
+  script:
+    - |
+      # Install dependencies for self-test
+      npm install jsonwebtoken
+      
+      # Run comprehensive self-test
+      export RENDERER_URL="${RENDERER_URL_STG}"
+      export RENDERER_JWT_SECRET="${RENDERER_JWT_SECRET}"
+      export CI_ENVIRONMENT_NAME="staging"
+      
+      node scripts/self-test.js
+  dependencies:
+    - deploy:forge:stg
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+e2e:production:
+  stage: e2e_test
+  script:
+    - |
+      # Install dependencies for self-test
+      npm install jsonwebtoken
+      
+      # Run comprehensive self-test against production
+      export RENDERER_URL="${RENDERER_URL_PROD}"
+      export RENDERER_JWT_SECRET="${RENDERER_JWT_SECRET}"
+      export CI_ENVIRONMENT_NAME="production"
+      
+      node scripts/self-test.js
+  dependencies:
+    - deploy:forge:prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  environment:
+    name: production
