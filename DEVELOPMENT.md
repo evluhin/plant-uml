@@ -227,3 +227,10 @@ sam logs --name RendererFunction --tail
 - **Pre-commit**: Lint and format code
 - **Pre-push**: Run tests
 - **Commit-msg**: Conventional commit format
+
+### CI/CD
+
+- **GitHub Actions**: Automated testing and deployment
+- **Staging**: Auto-deploy on main/develop push
+- **Production**: Manual deployment with confirmation
+- See [GitHub Actions Setup](../docs/GITHUB_ACTIONS_SETUP.md) for configuration

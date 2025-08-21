@@ -210,23 +210,23 @@ See [SECURITY.md](./SECURITY.md) for detailed threat analysis.
 
 ## 🚀 Deployment
 
-### CI/CD Pipeline (GitLab)
+### CI/CD Pipeline (GitHub Actions)
 
-Required variables in GitLab CI/CD settings:
+Required secrets in GitHub repository settings:
 ```bash
 # AWS
 AWS_ACCESS_KEY_ID=your-access-key
 AWS_SECRET_ACCESS_KEY=your-secret-key
-AWS_DEFAULT_REGION=us-east-1
 
 # Forge
-FORGE_APP_ID=your-app-id
+FORGE_EMAIL=your-email@example.com
 FORGE_API_TOKEN=your-api-token
 FORGE_ENV_STG=staging
 FORGE_ENV_PROD=production
 
 # Renderer
 RENDERER_JWT_SECRET_PARAM=/plantuml/renderer/jwt-secret
+RENDERER_JWT_SECRET=your-jwt-secret
 ```
 
 ### Manual Deployment
