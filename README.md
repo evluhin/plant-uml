@@ -308,6 +308,15 @@ Set up CloudWatch alarms for:
 - Average duration > 10s
 - Cold start rate > 20%
 
+## 📚 Documentation
+
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Complete development guide with local setup, testing, and workflows
+- **[SECURITY.md](./SECURITY.md)** - Security architecture, threat model, and compliance details
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Development workflow, coding standards, and contribution guidelines
+- **[MARKETPLACE.md](./MARKETPLACE.md)** - Atlassian Marketplace publishing guide and requirements
+- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
+- **[GitHub Actions Setup](./docs/GITHUB_ACTIONS_SETUP.md)** - CI/CD configuration and deployment guide
+
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow and guidelines.
