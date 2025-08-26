@@ -11,7 +11,7 @@ on:
 env:
   NODE_VERSION: '20'
   SAM_CLI_TELEMETRY: 0
-  AWS_DEFAULT_REGION: us-east-1
+  AWS_DEFAULT_REGION: eu-north-1
 
 jobs:
   validate-input:

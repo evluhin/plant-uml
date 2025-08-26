@@ -19,21 +19,21 @@ sam build
 
 # Set up local environment
 echo "🌍 Setting up local environment..."
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION=eu-north-1
 export NODE_ENV=development
 
 # Create local test JWT secret
 mkdir -p ~/.aws
 cat > ~/.aws/credentials << EOF
-[default]
+[plant-uml]
 aws_access_key_id = dummy
 aws_secret_access_key = dummy
-region = us-east-1
+region = eu-north-1
 EOF
 
 cat > ~/.aws/config << EOF
-[default]
-region = us-east-1
+[profile plant-uml]
+region = eu-north-1
 output = json
 EOF
 

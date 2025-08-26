@@ -1,11 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "types": ["jest", "@types/node"],
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "skipLibCheck": true
   },
-  "include": ["src/**/*", "static/**/*"],
-  "exclude": ["node_modules", "dist", "build", "tests"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "tests"
+  ]
 }

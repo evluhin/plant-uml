@@ -135,5 +135,6 @@ Production deployments use GitHub Environment protection rules:
 ### Manual Steps Required
 1. Configure GitHub repository secrets (see above)
 2. Set up GitHub Environments for production protection
-3. Configure branch protection rules if needed
-4. Update any external integrations pointing to GitLab CI
+3. Configure local AWS CLI profile: `aws configure --profile plant-uml`
+4. Configure branch protection rules if needed
+5. Update any external integrations pointing to GitLab CI

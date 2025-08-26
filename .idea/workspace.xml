@@ -4,13 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Change to github">
-      <change beforePath="$PROJECT_DIR$/FORGE_AUTH_SETUP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FORGE_CLI_TROUBLESHOOTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/INSTALLATION_FIXES.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_SUMMARY.md" beforeDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Update docs">
+      <change afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/resolver/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/ui-kit2/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-production.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-production.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-staging.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-staging.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPMENT.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/CI_EXAMPLE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/playwright.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/App.svelte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Editor.svelte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Preview.svelte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Toolbar.svelte" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/editor.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/editor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/admin.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/editor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/plantuml.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/tests/e2e/editor.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/vite.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/GITHUB_ACTIONS_SETUP.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/GITHUB_ACTIONS_SETUP.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/dev-setup.sh" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/dev-setup.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/src/handler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +52,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -35,26 +63,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Jest.Render Handler Integration.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/fraer/dev/cik/code/plant-uml-confluence",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest",
-    "nodejs_package_manager_path": "npm",
-    "npm.install -g @forge/cli.executor": "Run",
-    "settings.editor.selected.configurable": "configurable.group.tools",
-    "ts.external.directory.path": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Jest.Render Handler Integration.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.install -g @forge/cli.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.tools&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -140,7 +168,10 @@
       <workItem from="1755190081201" duration="536000" />
       <workItem from="1755444385982" duration="4844000" />
       <workItem from="1755502508557" duration="11614000" />
-      <workItem from="1755784524342" duration="4497000" />
+      <workItem from="1755784524342" duration="5357000" />
+      <workItem from="1755854214594" duration="9128000" />
+      <workItem from="1756130150343" duration="8834000" />
+      <workItem from="1756236415879" duration="2010000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -166,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755794043095</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update docs">
+      <option name="closed" value="true" />
+      <created>1755794720300</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1755794720300</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,6 +215,7 @@
     <MESSAGE value="Add git ignore" />
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Change to github" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change to github" />
+    <MESSAGE value="Update docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update docs" />
   </component>
 </project>

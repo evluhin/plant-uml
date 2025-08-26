@@ -70,21 +70,6 @@ Resources:
             Path: /health
             Method: get
 
-  # Health Check Function
-  HealthFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub plantuml-health-${Environment}
-      CodeUri: .
-      Handler: dist/handlers/health.handler
-      Events:
-        HealthApi:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref RendererApi
-            Path: /health
-            Method: get
-
   # HTTP API Gateway
   RendererApi:
     Type: AWS::Serverless::HttpApi
@@ -92,13 +77,13 @@ Resources:
       StageName: !Ref Environment
       CorsConfiguration:
         AllowOrigins:
-          - "https://*.atlassian.net"
-          - "https://developer.atlassian.com"
+          - "*"
         AllowHeaders:
           - Content-Type
           - Authorization
         AllowMethods:
           - POST
+          - GET
           - OPTIONS
         MaxAge: 600
 

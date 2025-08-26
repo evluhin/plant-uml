@@ -47,6 +47,7 @@ npm install
 
 # Create JWT secret in AWS SSM
 aws ssm put-parameter \
+  --profile plant-uml \
   --name "/plantuml/renderer/jwt-secret" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
@@ -55,7 +56,8 @@ aws ssm put-parameter \
 # Deploy renderer service
 cd services/renderer
 sam build
-sam deploy --guided  # Follow prompts, use 'dev' environment
+sam deploy --guided  # First time only, saves config
+# sam deploy        # Subsequent deployments (automated)
 
 # Copy the API URL from outputs
 export RENDERER_URL="https://your-api-id.execute-api.region.amazonaws.com/dev"
@@ -88,7 +90,7 @@ export FORGE_API_TOKEN="your-api-token-here"
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Confluence    │    │   Forge App      │    │  AWS Lambda     │
-│     Cloud       │◄──►│  (Svelte UI +    │◄──►│   Renderer      │
+│     Cloud       │◄──►│  (Forge UI +     │◄──►│   Renderer      │
 │                 │    │   Resolvers)     │    │ (PlantUML JAR)  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                               │                         │
@@ -101,7 +103,7 @@ export FORGE_API_TOKEN="your-api-token-here"
 
 ### Components
 
-- **Forge App** (`apps/forge-plantuml/`): Svelte-based Custom UI with Monaco editor
+- **Forge App** (`apps/forge-plantuml/`): Forge UI-based macro with text editor
 - **Renderer Service** (`services/renderer/`): AWS Lambda with PlantUML JAR + Graphviz
 - **Security**: JWT HS256 tokens with 60s TTL, CORS restrictions
 - **Storage**: Hash-based attachment caching in Forge storage
@@ -139,7 +141,6 @@ npx @forge/cli tunnel
 ```bash
 # Use deployed staging renderer
 cd apps/forge-plantuml
-npm run dev  # TypeScript watch mode
 npx @forge/cli tunnel
 ```
 
@@ -232,9 +233,12 @@ RENDERER_JWT_SECRET=your-jwt-secret
 ### Manual Deployment
 
 ```bash
-# Deploy renderer
+# Deploy renderer (automated after first setup)
 cd services/renderer
-sam deploy --config-env prod
+sam build
+sam deploy --config-env dev    # Development
+sam deploy --config-env stg    # Staging  
+sam deploy --config-env prod   # Production
 
 # Deploy Forge app
 cd apps/forge-plantuml
@@ -250,6 +254,7 @@ NEW_SECRET=$(openssl rand -base64 32)
 
 # Update SSM parameter
 aws ssm put-parameter \
+  --profile plant-uml \
   --name "/plantuml/renderer/jwt-secret" \
   --value "${NEW_SECRET}" \
   --type "SecureString" \
@@ -286,6 +291,7 @@ npx @forge/cli deploy
 ```bash
 # Enable payload logging (development only)
 aws lambda update-function-configuration \
+  --profile plant-uml \
   --function-name plantuml-renderer-dev \
   --environment Variables='{LOG_PAYLOADS=true}'
 ```

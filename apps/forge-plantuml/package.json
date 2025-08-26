@@ -4,17 +4,17 @@
   "description": "PlantUML Forge app for Confluence Cloud",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "forge lint",
+    "dev": "forge tunnel",
     "test": "jest",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src --ext .js,.ts",
     "fmt": "prettier --write src",
-    "clean": "rm -rf dist build node_modules",
-    "tunnel": "forge tunnel"
+    "clean": "rm -rf dist build node_modules"
   },
   "dependencies": {
-    "@forge/api": "^2.15.0",
-    "@forge/ui": "^1.10.0",
+    "@forge/api": "^3.9.2",
+    "@forge/bridge": "^3.5.0",
+    "@forge/react": "^11.2.7",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import { storage } from '@forge/api';
-import { generateAttachmentHash, clampDimensions } from './utils/hash';
-import { sanitizeSVG } from './utils/sanitize';
+import { generateAttachmentHash, clampDimensions } from '../utils/hash';
+import { sanitizeSVG } from '../utils/sanitize';
 
 interface MacroParameters {
   source?: string;

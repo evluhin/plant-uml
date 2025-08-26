@@ -5,6 +5,9 @@
 ### 1. Setup Development Environment
 
 ```bash
+# Configure AWS CLI with plant-uml profile
+aws configure --profile plant-uml
+
 # Install dependencies
 npm install
 
@@ -29,7 +32,6 @@ npm run local   # Starts on http://localhost:3001
 
 # Terminal 3: Forge app development
 cd apps/forge-plantuml
-npm run dev     # TypeScript watch mode
 npx @forge/cli tunnel  # Connects to Confluence
 ```
 
@@ -107,7 +109,7 @@ services/renderer/
   "RendererFunction": {
     "JWT_SECRET_PARAM": "/test/secret",
     "NODE_ENV": "development",
-    "AWS_REGION": "us-east-1"
+    "AWS_REGION": "eu-north-1"
   }
 }
 ```
