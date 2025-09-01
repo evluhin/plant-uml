@@ -1,20 +1,11 @@
-import { storage } from '@forge/api';
-import { generateAttachmentHash, clampDimensions } from '../utils/hash';
-import { sanitizeSVG } from '../utils/sanitize';
+const { storage } = require('@forge/api');
+const { generateAttachmentHash, clampDimensions } = require('../utils/hash');
+const { sanitizeSVG } = require('../utils/sanitize');
 
-interface MacroParameters {
-  source?: string;
-  format?: 'svg' | 'png';
-  width?: string;
-  height?: string;
-  title?: string;
-  theme?: string;
-}
-
-export async function render(req: { payload: MacroParameters }): Promise<{ html: string }> {
+async function render(req) {
   const { source, format = 'svg', width, height, title, theme } = req.payload;
   
-  if (!source?.trim()) {
+  if (!source || !source.trim()) {
     return {
       html: '<div style="padding: 16px; border: 1px solid #ccc; background: #f5f5f5;">No PlantUML source provided</div>'
     };
@@ -26,7 +17,7 @@ export async function render(req: { payload: MacroParameters }): Promise<{ html:
     // Check if attachment already exists
     const existingAttachment = await storage.get(`attachment:${hash}`);
     if (existingAttachment) {
-      return renderExistingAttachment(existingAttachment as string, format, width, height, title);
+      return renderExistingAttachment(existingAttachment, format, width, height, title);
     }
     
     // For demo purposes, return a placeholder
@@ -53,7 +44,7 @@ export async function render(req: { payload: MacroParameters }): Promise<{ html:
   }
 }
 
-export async function getAdminPage(): Promise<{ html: string }> {
+async function getAdminPage() {
   const currentUrl = await storage.get('renderer-url') || process.env.RENDERER_URL || 'https://api.plantuml-renderer.example.com';
   
   return {
@@ -68,7 +59,7 @@ export async function getAdminPage(): Promise<{ html: string }> {
   };
 }
 
-function renderExistingAttachment(content: string, format: string, width?: string, height?: string, title?: string) {
+function renderExistingAttachment(content, format, width, height, title) {
   if (format === 'svg') {
     return renderSVG(content, width, height, title);
   } else {
@@ -76,7 +67,7 @@ function renderExistingAttachment(content: string, format: string, width?: strin
   }
 }
 
-function renderSVG(svg: string, width?: string, height?: string, title?: string): { html: string } {
+function renderSVG(svg, width, height, title) {
   const dimensions = clampDimensions(width, height);
   const style = Object.entries(dimensions)
     .map(([key, value]) => `${key}: ${value}px`)
@@ -94,7 +85,7 @@ function renderSVG(svg: string, width?: string, height?: string, title?: string)
   };
 }
 
-function renderPNG(base64: string, width?: string, height?: string, title?: string): { html: string } {
+function renderPNG(base64, width, height, title) {
   const dimensions = clampDimensions(width, height);
   const style = Object.entries(dimensions)
     .map(([key, value]) => `${key}: ${value}px`)
@@ -111,3 +102,5 @@ function renderPNG(base64: string, width?: string, height?: string, title?: stri
     `
   };
 }
+
+module.exports = { render, getAdminPage };

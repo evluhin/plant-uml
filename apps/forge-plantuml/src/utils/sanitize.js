@@ -1,4 +1,4 @@
-export function sanitizeSVG(svg: string): string {
+function sanitizeSVG(svg) {
   // Remove script tags and foreign objects for security
   return svg
     .replace(/<script[^>]*>.*?<\/script>/gis, '')
@@ -6,3 +6,5 @@ export function sanitizeSVG(svg: string): string {
     .replace(/javascript:/gi, '')
     .replace(/on\w+\s*=/gi, '');
 }
+
+module.exports = { sanitizeSVG };

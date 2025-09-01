@@ -1,20 +1,16 @@
-import { createHash } from 'crypto';
+const { createHash } = require('crypto');
 
-export function generateAttachmentHash(
-  source: string,
-  format: string,
-  theme?: string
-): string {
+function generateAttachmentHash(source, format, theme) {
   const content = `${source}|${format}|${theme || 'default'}`;
   return createHash('sha256').update(content).digest('hex').substring(0, 16);
 }
 
-export function generateAttachmentName(hash: string, format: string): string {
+function generateAttachmentName(hash, format) {
   return `plantuml-${hash}.${format}`;
 }
 
-export function clampDimensions(width?: string, height?: string): { width?: number; height?: number } {
-  const result: { width?: number; height?: number } = {};
+function clampDimensions(width, height) {
+  const result = {};
   
   if (width) {
     const w = parseInt(width, 10);
@@ -32,3 +28,5 @@ export function clampDimensions(width?: string, height?: string): { width?: numb
   
   return result;
 }
+
+module.exports = { generateAttachmentHash, generateAttachmentName, clampDimensions };

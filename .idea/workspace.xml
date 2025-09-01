@@ -4,41 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Update docs">
-      <change afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/resolver/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/ui-kit2/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-production.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-production.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-staging.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-staging.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="update code to pass linter and change ci/cd">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPMENT.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/playwright.config.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/App.svelte" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Editor.svelte" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Preview.svelte" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/components/Toolbar.svelte" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/editor.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/editor.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/admin.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/editor.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/plantuml.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/tests/e2e/editor.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/vite.config.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/GITHUB_ACTIONS_SETUP.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/GITHUB_ACTIONS_SETUP.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/dev-setup.sh" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/dev-setup.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/src/handler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/__tests__/hash.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/__tests__/sanitize.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolver/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/ui-kit2/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/utils/hash.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/utils/jwt.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/utils/renderer.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/utils/sanitize.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +54,7 @@
     &quot;nodejs.jest.jest_package&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.install -g @forge/cli.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.tools&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -171,7 +147,15 @@
       <workItem from="1755784524342" duration="5357000" />
       <workItem from="1755854214594" duration="9128000" />
       <workItem from="1756130150343" duration="8834000" />
-      <workItem from="1756236415879" duration="2010000" />
+      <workItem from="1756236415879" duration="2851000" />
+      <workItem from="1756725433839" duration="2469000" />
+      <workItem from="1756728304899" duration="1439000" />
+      <workItem from="1756731420809" duration="515000" />
+      <workItem from="1756731986773" duration="192000" />
+      <workItem from="1756732191522" duration="204000" />
+      <workItem from="1756732408513" duration="102000" />
+      <workItem from="1756732601332" duration="813000" />
+      <workItem from="1756733680778" duration="3103000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -205,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755794720300</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="update code to pass linter and change ci/cd">
+      <option name="closed" value="true" />
+      <created>1756238466736</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1756238466736</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -216,6 +208,7 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Change to github" />
     <MESSAGE value="Update docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update docs" />
+    <MESSAGE value="update code to pass linter and change ci/cd" />
+    <option name="LAST_COMMIT_MESSAGE" value="update code to pass linter and change ci/cd" />
   </component>
 </project>

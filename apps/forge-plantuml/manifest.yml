@@ -3,14 +3,16 @@ modules:
     - key: plantuml-macro
       title: PlantUML
       description: Create and edit PlantUML diagrams
-      function: plantuml-ui
+      resource: base
       render: native
 
   function:
-    - key: plantuml-ui
-      handler: ui-kit2/index.run
     - key: plantuml-resolver
-      handler: resolver/index.render
+      handler: resolvers/index.render
+
+resources:
+  - key: base
+    path: src/ui-kit2/index.jsx
 
 permissions:
   scopes:
@@ -20,7 +22,7 @@ permissions:
   external:
     fetch:
       backend:
-        - address: "https://pb3hubgska.execute-api.eu-north-1.amazonaws.com/dev"
+        - "https://pb3hubgska.execute-api.eu-north-1.amazonaws.com/dev"
 
 app:
   id: ari:cloud:ecosystem::app/5cdc958f-0844-4ecf-967b-5ba58b1f2cff
