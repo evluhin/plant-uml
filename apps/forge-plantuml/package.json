@@ -14,7 +14,9 @@
   "dependencies": {
     "@forge/api": "^3.9.2",
     "@forge/bridge": "^3.5.0",
-    "@forge/react": "^11.2.7",
+    "@forge/react": "^11.2.8",
+    "@forge/resolver": "^1.7.0",
+    "@forge/ui": "^1.11.4",
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {

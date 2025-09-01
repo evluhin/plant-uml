@@ -3,16 +3,18 @@ modules:
     - key: plantuml-macro
       title: PlantUML
       description: Create and edit PlantUML diagrams
-      resource: base
       render: native
+      resource: main
 
   function:
+    - key: main
+      handler: index.handler
     - key: plantuml-resolver
       handler: resolvers/index.render
 
 resources:
-  - key: base
-    path: src/ui-kit2/index.jsx
+  - key: main
+    path: src/frontend/index.jsx
 
 permissions:
   scopes:
