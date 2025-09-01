@@ -5,16 +5,18 @@ modules:
       description: Create and edit PlantUML diagrams
       render: native
       resource: main
+      resolver:
+        function: renderDiagram
 
   function:
-    - key: main
-      handler: index.handler
-    - key: plantuml-resolver
-      handler: resolvers/index.render
+    - key: renderDiagram
+      handler: index.renderDiagram
 
 resources:
   - key: main
     path: src/frontend/index.jsx
+
+
 
 permissions:
   scopes:

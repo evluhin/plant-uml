@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "forge lint",
-    "dev": "forge tunnel",
+    "tunnel": "forge tunnel",
     "test": "jest",
     "lint": "eslint src --ext .js,.ts",
     "fmt": "prettier --write src",

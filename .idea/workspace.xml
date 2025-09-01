@@ -4,14 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Not deprecated but loading">
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Plugin is visible">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Forge_Tunnel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Local_Renderer.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plant-uml-confluence.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/ui-kit2/index.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/handler.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/handlers/health.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/handlers/render.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/types/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/jwt-mock.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/jwt.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/plantuml-mock.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/plantuml.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,35 +52,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Jest.Render Handler Integration.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "hello-world",
-    "last_opened_file_path": "/Users/fraer/dev/cik/code/plant-uml-confluence",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs.jest.jest_package": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest",
-    "nodejs_package_manager_path": "npm",
-    "npm.install -g @forge/cli.executor": "Run",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Jest.Render Handler Integration.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;hello-world&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs.jest.jest_package&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.forge-plantuml &gt; tunnel -d --verbose.executor&quot;: &quot;Debug&quot;,
+    &quot;npm.install -g @forge/cli.executor&quot;: &quot;Run&quot;,
+    &quot;npm.renderer &gt; local.executor&quot;: &quot;Debug&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.Render Handler Integration">
+  <component name="RunManager" selected="npm.forge-plantuml &gt; tunnel -d --verbose">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
@@ -89,49 +102,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-    </configuration>
-    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <option name="TEST_OBJECT" value="class" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Render Handler Integration" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <jest-package value="$PROJECT_DIR$/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/services/renderer" />
-      <envs />
-      <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/services/renderer/tests/integration/render.test.ts" />
-      <test-names>
-        <test-name value="Render Handler Integration" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="ENV_FILES" value="" />
@@ -170,6 +140,12 @@
       <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
+    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+    </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -182,6 +158,49 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Render Handler Integration" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <jest-package value="$PROJECT_DIR$/node_modules/jest" />
+      <working-dir value="$PROJECT_DIR$/services/renderer" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/services/renderer/tests/integration/render.test.ts" />
+      <test-names>
+        <test-name value="Render Handler Integration" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Jest.Render Handler Integration" />
+      <item itemvalue="npm.forge-plantuml &gt; tunnel -d --verbose" />
+      <item itemvalue="npm.renderer &gt; local" />
+      <item itemvalue="npm.Test Local" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Jest.Render Handler Integration" />
@@ -219,7 +238,9 @@
       <workItem from="1756732408513" duration="102000" />
       <workItem from="1756732601332" duration="813000" />
       <workItem from="1756733680778" duration="3619000" />
-      <workItem from="1756737375186" duration="2374000" />
+      <workItem from="1756737375186" duration="9045000" />
+      <workItem from="1756746646655" duration="1620000" />
+      <workItem from="1756755074614" duration="2917000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -269,11 +290,38 @@
       <option name="project" value="LOCAL" />
       <updated>1756736872071</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Hello world">
+      <option name="closed" value="true" />
+      <created>1756739806163</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1756739806163</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Plugin is visible">
+      <option name="closed" value="true" />
+      <created>1756740564954</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1756740564954</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add git ignore" />
@@ -282,6 +330,19 @@
     <MESSAGE value="Update docs" />
     <MESSAGE value="update code to pass linter and change ci/cd" />
     <MESSAGE value="Not deprecated but loading" />
-    <option name="LAST_COMMIT_MESSAGE" value="Not deprecated but loading" />
+    <MESSAGE value="Hello world" />
+    <MESSAGE value="Plugin is visible" />
+    <option name="LAST_COMMIT_MESSAGE" value="Plugin is visible" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/apps/forge-plantuml/src/index.js</url>
+          <line>4</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

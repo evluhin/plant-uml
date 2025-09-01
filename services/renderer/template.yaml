@@ -46,7 +46,7 @@ Resources:
     Properties:
       FunctionName: !Sub plantuml-renderer-${Environment}
       CodeUri: .
-      Handler: dist/handler.render
+      Handler: src/handler.render
       Layers:
         - !Ref PlantUMLLayer
       Environment:
@@ -69,6 +69,7 @@ Resources:
             ApiId: !Ref RendererApi
             Path: /health
             Method: get
+
 
   # HTTP API Gateway
   RendererApi:

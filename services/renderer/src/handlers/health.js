@@ -1,6 +1,4 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-
-export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+exports.handler = async function(event) {
   return {
     statusCode: 200,
     headers: {
@@ -12,4 +10,4 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
       environment: process.env.NODE_ENV || 'unknown'
     })
   };
-}
+};
