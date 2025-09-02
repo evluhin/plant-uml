@@ -1,64 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import ForgeReconciler, { Text, Button, TextArea, Stack, Box, Image } from '@forge/react';
-import { view, invoke } from '@forge/bridge';
+import ForgeReconciler, { Text, Button, Stack, Box, Image, useConfig } from '@forge/react';
+import { invoke } from '@forge/bridge';
 
 const App = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [source, setSource] = useState('@startuml\nAlice -> Bob: Hello\nBob -> Charlie: World\nCharlie -> Alice: !\n@enduml');
-  const [editingSource, setEditingSource] = useState('');
+  const config = useConfig();
   const [diagramUrl, setDiagramUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSave = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await invoke('renderDiagram', { source: editingSource });
-      if (result.success) {
-        setSource(editingSource);
-        setDiagramUrl(result.diagramUrl);
-        setIsEditing(false);
-      } else {
-        setError(result.error || 'Failed to render diagram');
-      }
-    } catch (err) {
-      setError(err.message || 'Network error');
-    } finally {
-      setIsLoading(false);
+  const source = config?.source || '';
+
+  console.log('App render - config:', config);
+  console.log('App render - source:', source);
+
+  useEffect(() => {
+    console.log('useEffect triggered - source:', source);
+    if (source) {
+      setIsLoading(true);
+      setError(null);
+      console.log('Calling renderDiagram with source:', source.substring(0, 50) + '...');
+      invoke('renderDiagram', { source })
+        .then((result) => {
+          console.log('renderDiagram result:', result);
+          if (result.success) {
+            console.log('Setting new diagramUrl, length:', result.diagramUrl.length);
+            console.log('DiagramUrl preview:', result.diagramUrl.substring(0, 100) + '...');
+            setDiagramUrl(result.diagramUrl);
+          } else {
+            setError(result.error);
+          }
+        })
+        .catch((err) => {
+          console.error('renderDiagram error:', err);
+          setError(err.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-  };
+  }, [source]);
 
-  const handleEdit = () => {
-    setEditingSource(source);
-    setIsEditing(true);
-  };
-
-  if (isEditing) {
+  if (isLoading) {
     return (
       <Box padding="space.300">
-        <Stack space="space.300">
-          <Text weight="bold">Edit PlantUML Diagram</Text>
-          <TextArea
-            value={editingSource}
-            onChange={(e) => setEditingSource(e.target.value)}
-            placeholder="@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml"
-            minimumRows={15}
-            isMonospaced={true}
-          />
-          {error && (
-            <Box padding="space.200" backgroundColor="color.background.danger" borderRadius="border.radius.200">
-              <Text color="color.text.danger">{error}</Text>
-            </Box>
-          )}
-          <Stack direction="horizontal" space="space.200" alignInline="start">
-            <Button appearance="primary" onClick={handleSave} isLoading={isLoading}>
-              {isLoading ? 'Rendering...' : 'Save & Preview'}
-            </Button>
-            <Button onClick={() => setIsEditing(false)} isDisabled={isLoading}>
-              Cancel
-            </Button>
-          </Stack>
+        <Text>Rendering diagram...</Text>
+      </Box>
+    );
+  }
+
+  if (!source) {
+    return (
+      <Box padding="space.300">
+        <Stack space="space.200">
+          <Text weight="bold">PlantUML Diagram</Text>
+          <Text color="color.text.subtle">
+            Click the edit button (⚙️) to configure your PlantUML diagram source code.
+          </Text>
         </Stack>
       </Box>
     );
@@ -71,24 +68,31 @@ const App = () => {
           <Stack space="space.100">
             <Text weight="bold">PlantUML Diagram</Text>
             <Text size="small" color="color.text.subtlest">
-              {source.split('\n').length} lines • Click edit to modify
+              {source.split('\n').length} lines • Click ⚙️ to edit
             </Text>
           </Stack>
         </Box>
-        {diagramUrl ? (
+        
+        {error ? (
+          <Box padding="space.200" backgroundColor="color.background.danger" borderRadius="border.radius.200">
+            <Text color="color.text.danger">Error: {error}</Text>
+          </Box>
+        ) : diagramUrl ? (
           <Box padding="space.200" backgroundColor="color.background.neutral.subtle" borderRadius="border.radius.200">
             <Box style={{ width: '100%', overflow: 'auto', textAlign: 'center' }}>
-              <Image src={diagramUrl} alt="PlantUML Diagram" style={{ width: '100%', maxWidth: '100%', height: 'auto' }} />
+              <Image 
+                key={diagramUrl} 
+                src={diagramUrl} 
+                alt="PlantUML Diagram" 
+                style={{ width: '100%', maxWidth: '100%', height: 'auto' }} 
+              />
             </Box>
           </Box>
         ) : (
           <Box padding="space.200" backgroundColor="color.background.neutral" borderRadius="border.radius.200">
-            <Text color="color.text.subtle">No diagram rendered yet. Click edit to create one.</Text>
+            <Text color="color.text.subtle">Diagram will appear here after configuration.</Text>
           </Box>
         )}
-        <Button appearance="primary" onClick={handleEdit}>
-          Edit Diagram
-        </Button>
       </Stack>
     </Box>
   );

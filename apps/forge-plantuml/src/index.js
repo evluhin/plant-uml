@@ -1,13 +1,17 @@
 const api = require('@forge/api');
 const jwt = require('jsonwebtoken');
+const { storage } = require('@forge/api');
+const crypto = require('crypto');
 
 exports.renderDiagram = async (req) => {
-  console.log('renderDiagram called with:', JSON.stringify(req, null, 2));
+  console.log('=== renderDiagram called ===');
+  console.log('Full request:', JSON.stringify(req, null, 2));
   
-  // If this is a macro resolver call (no source), return empty object
   const source = req.call?.payload?.source || req.payload?.source;
+  console.log('Extracted source:', source);
+  
   if (!source) {
-    console.log('Macro resolver call - returning empty object');
+    console.log('No source found, returning empty object');
     return {};
   }
   
@@ -17,9 +21,20 @@ exports.renderDiagram = async (req) => {
   }
 
   try {
-    console.log('Rendering PlantUML source:', source.substring(0, 100) + '...');
+    // Generate hash for caching
+    const sourceHash = crypto.createHash('sha256').update(source).digest('hex');
+    const cacheKey = `diagram_${sourceHash}`;
     
-    // Generate JWT token for authentication
+    // Check cache first
+    const cached = await storage.get(cacheKey);
+    if (cached) {
+      console.log('Returning cached diagram for hash:', sourceHash.substring(0, 8));
+      return { success: true, diagramUrl: cached.diagramUrl, timestamp: cached.timestamp, cached: true };
+    }
+    
+    console.log('Rendering new diagram for hash:', sourceHash.substring(0, 8));
+    
+    // Generate JWT token
     const jwtSecret = process.env.RENDERER_JWT_SECRET || 'dev-secret';
     const token = jwt.sign(
       {
@@ -32,9 +47,9 @@ exports.renderDiagram = async (req) => {
       { algorithm: 'HS256' }
     );
 
-    // Call AWS Lambda renderer
+    // Call renderer
     const rendererUrl = process.env.RENDERER_URL || 'https://pb3hubgska.execute-api.eu-north-1.amazonaws.com/dev';
-    console.log('Calling renderer at:', rendererUrl);
+    console.log('Calling Lambda at:', rendererUrl);
     
     const response = await api.fetch(`${rendererUrl}/render`, {
       method: 'POST',
@@ -42,28 +57,29 @@ exports.renderDiagram = async (req) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({
-        source: source,
-        format: 'svg'
-      })
+      body: JSON.stringify({ source, format: 'svg' })
     });
 
-    console.log('Renderer response status:', response.status);
-    
+    console.log('Lambda response status:', response.status);
+    console.log('Lambda response headers:', response.headers);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Renderer error:', errorText);
+      console.error('Lambda error response:', errorText);
       return { success: false, error: `Renderer failed: ${response.status} - ${errorText}` };
     }
 
     const result = await response.text();
-    console.log('Renderer result length:', result.length);
-    console.log('SVG content preview:', result.substring(0, 200));
-    
-    // For SVG, return as data URL with proper encoding
+    console.log('Lambda response length:', result.length);
+    console.log('Lambda response preview:', result.substring(0, 200));
+    const timestamp = Date.now();
     const diagramUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(result)}`;
     
-    return { success: true, diagramUrl };
+    // Cache the result
+    await storage.set(cacheKey, { diagramUrl, timestamp });
+    console.log('Cached diagram with hash:', sourceHash.substring(0, 8));
+    
+    return { success: true, diagramUrl, timestamp };
     
   } catch (error) {
     console.error('PlantUML render error:', error);

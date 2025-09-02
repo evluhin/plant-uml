@@ -7,6 +7,10 @@ modules:
       resource: main
       resolver:
         function: renderDiagram
+      config:
+        openOnInsert: true
+        resource: config
+        render: native
 
   function:
     - key: renderDiagram
@@ -15,6 +19,8 @@ modules:
 resources:
   - key: main
     path: src/frontend/index.jsx
+  - key: config
+    path: src/macro-config.jsx
 
 
 
