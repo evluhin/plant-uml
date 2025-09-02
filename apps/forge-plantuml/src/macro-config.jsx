@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ForgeReconciler, { Text, Button, TextArea, Stack, Box } from '@forge/react';
+import ForgeReconciler, { Text, Button, TextArea, Stack, Box, Heading, Inline } from '@forge/react';
 import { view } from '@forge/bridge';
 
 const ConfigApp = () => {
   const [source, setSource] = useState('@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     view.getContext().then((ctx) => {
@@ -15,39 +16,106 @@ const ConfigApp = () => {
   }, []);
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
       await view.submit({ config: { source: source } });
     } catch (error) {
       console.error('Submit error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const handleCancel = () => {
+    view.close();
+  };
+
+  const exampleDiagrams = [
+    {
+      name: 'Sequence Diagram',
+      code: '@startuml\nAlice -> Bob: Authentication Request\nBob --> Alice: Authentication Response\n\nAlice -> Bob: Another authentication Request\nAlice <-- Bob: Another authentication Response\n@enduml'
+    },
+    {
+      name: 'Class Diagram',
+      code: '@startuml\nclass User {\n  +String name\n  +String email\n  +login()\n  +logout()\n}\n\nclass Admin {\n  +manageUsers()\n}\n\nUser <|-- Admin\n@enduml'
+    },
+    {
+      name: 'Activity Diagram',
+      code: '@startuml\nstart\n:User opens app;\nif (User logged in?) then (yes)\n  :Show dashboard;\nelse (no)\n  :Show login screen;\n  :User enters credentials;\n  :Validate credentials;\nendif\nstop\n@enduml'
+    }
+  ];
+
+  const insertExample = (code) => {
+    setSource(code);
+  };
+
+  const hasExistingDiagram = source.trim() && source !== '@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml';
+
   return (
-    <Box padding="space.300">
-      <Stack space="space.300">
-        <Text weight="bold">Configure PlantUML Diagram</Text>
-        <Text size="small" color="color.text.subtlest">
-          Enter your PlantUML diagram source code below.
+    <Stack space="space.200">
+      {/* Header */}
+      <Box paddingInline="space.200" paddingBlockEnd="space.100">
+        <Stack space="space.050">
+          <Heading size="medium">PlantUML Editor</Heading>
+        </Stack>
+      </Box>
+
+      {/* Quick Templates - only for new diagrams */}
+      {!hasExistingDiagram && (
+        <Box paddingInline="space.200">
+          <Stack space="space.100">
+            <Text weight="medium" size="small">Quick Start</Text>
+            <Stack direction="horizontal" space="space.100" wrap>
+              {exampleDiagrams.map((example, index) => (
+                <Button
+                  key={index}
+                  onClick={() => insertExample(example.code)}
+                  appearance="subtle"
+                  size="compact"
+                >
+                  {example.name}
+                </Button>
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
+      )}
+
+      {/* Editor */}
+      <Box paddingInline="space.200">
+        <Text size="small" color="color.text.subtle">
+          Edit your diagram source code
         </Text>
-        
         <TextArea
           value={source}
           onChange={(e) => setSource(e.target.value)}
-          placeholder="@startuml&#10;Alice -> Bob: Hello&#10;Bob -> Alice: Hi there&#10;@enduml"
-          minimumRows={20}
+          placeholder="@startuml&#10;Alice -> Bob: Hello World&#10;Bob --> Alice: Hi there!&#10;@enduml"
+          minimumRows={hasExistingDiagram ? 18 : 12}
           isMonospaced={true}
+          resize="vertical"
         />
-        
-        <Stack direction="horizontal" space="space.200" alignInline="start">
-          <Button onClick={handleSubmit} appearance="primary">
-            Save Configuration
-          </Button>
-          <Button onClick={() => view.close()}>
+      </Box>
+
+      {/* Actions */}
+      <Box padding="space.200" paddingBlockStart="space.150">
+        <Inline space="space.150" alignInline="end">
+          <Button 
+            onClick={handleCancel} 
+            appearance="subtle"
+            isDisabled={isSubmitting}
+          >
             Cancel
           </Button>
-        </Stack>
-      </Stack>
-    </Box>
+          <Button 
+            onClick={handleSubmit} 
+            appearance="primary"
+            isLoading={isSubmitting}
+          >
+            Save
+          </Button>
+        </Inline>
+      </Box>
+    </Stack>
   );
 };
 
