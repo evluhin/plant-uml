@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Rendering works">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Rendering doesn't work but edit works">
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -226,6 +225,7 @@
       <workItem from="1756746646655" duration="1620000" />
       <workItem from="1756755074614" duration="3366000" />
       <workItem from="1756811110716" duration="51000" />
+      <workItem from="1756811182942" duration="328000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -299,7 +299,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756758836086</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Rendering doesn't work but edit works">
+      <option name="closed" value="true" />
+      <created>1756811352043</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1756811352043</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -326,7 +334,8 @@
     <MESSAGE value="Hello world" />
     <MESSAGE value="Plugin is visible" />
     <MESSAGE value="Rendering works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rendering works" />
+    <MESSAGE value="Rendering doesn't work but edit works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rendering doesn't work but edit works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
