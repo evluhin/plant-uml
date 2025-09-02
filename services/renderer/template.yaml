@@ -16,7 +16,7 @@ Globals:
   Function:
     Timeout: 20
     MemorySize: 1024
-    Runtime: nodejs20.x
+    Runtime: java11
     Architectures:
       - x86_64
     Environment:
@@ -34,7 +34,7 @@ Resources:
       Description: PlantUML JAR and Graphviz binaries
       ContentUri: layers/plantuml-layer/
       CompatibleRuntimes:
-        - nodejs20.x
+        - java11
       CompatibleArchitectures:
         - x86_64
     Metadata:
@@ -46,7 +46,7 @@ Resources:
     Properties:
       FunctionName: !Sub plantuml-renderer-${Environment}
       CodeUri: .
-      Handler: src/handler.render
+      Handler: com.plantuml.Handler::handleRequest
       Layers:
         - !Ref PlantUMLLayer
       Environment:

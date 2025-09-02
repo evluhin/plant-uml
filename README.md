@@ -104,7 +104,7 @@ export FORGE_API_TOKEN="your-api-token-here"
 ### Components
 
 - **Forge App** (`apps/forge-plantuml/`): Forge UI-based macro with text editor
-- **Renderer Service** (`services/renderer/`): AWS Lambda with PlantUML JAR + Graphviz
+- **Renderer Service** (`services/renderer/`): Java 11 AWS Lambda with built-in PlantUML
 - **Security**: JWT HS256 tokens with 60s TTL, CORS restrictions
 - **Storage**: Hash-based attachment caching in Forge storage
 
@@ -115,21 +115,17 @@ export FORGE_API_TOKEN="your-api-token-here"
 #### Setup Development Environment
 
 ```bash
-# Setup renderer for local development
-cd services/renderer
-bash dev-setup.sh
-
 # Test local renderer
-npm run test:local
+cd services/renderer
+bash test-loop.sh
 ```
 
 #### Option 1: Local Renderer + Forge Tunnel
 
 ```bash
-# Terminal 1: Start local renderer with watch mode
+# Terminal 1: Start local renderer
 cd services/renderer
-npm run dev     # TypeScript watch mode
-npm run local   # SAM local API (separate terminal)
+sam local start-api --port 3001
 
 # Terminal 2: Start Forge tunnel
 cd apps/forge-plantuml
@@ -147,16 +143,13 @@ npx @forge/cli tunnel
 ### Testing
 
 ```bash
-# Run all tests
-npm run test
-
-# Unit tests only
-npm run test --workspaces
-
-# Integration tests (requires sam local)
+# Test renderer locally
 cd services/renderer
-sam local start-api --port 3001 &
-npm run test:integration
+bash test-loop.sh
+
+# Manual testing
+sam local start-api --port 3001
+# Test with POST to http://localhost:3001/render
 ```
 
 ### Scripts
@@ -272,15 +265,11 @@ npx @forge/cli deploy
 #### "Renderer failed: 500"
 - Check CloudWatch logs: `/aws/lambda/plantuml-renderer-{env}`
 - Verify JWT secret matches between Forge and Lambda
-- Ensure Graphviz binaries are in Lambda layer
+- Ensure Java 11 runtime is configured
 
 #### "CORS error"
 - Verify API Gateway CORS settings include Atlassian domains
 - Check request origin matches allowed origins
-
-#### "Layer too large"
-- PlantUML layer must be < 250MB unzipped, < 50MB zipped
-- Use minimal Graphviz build for Linux x86_64
 
 #### "Permission denied"
 - Verify Lambda has SSM read permissions
