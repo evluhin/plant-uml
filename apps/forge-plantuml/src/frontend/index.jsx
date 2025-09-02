@@ -64,15 +64,6 @@ const App = () => {
   return (
     <Box padding="space.300">
       <Stack space="space.200">
-        <Box padding="space.300" backgroundColor="color.background.neutral.subtle" borderRadius="border.radius.200">
-          <Stack space="space.100">
-            <Text weight="bold">PlantUML Diagram</Text>
-            <Text size="small" color="color.text.subtlest">
-              {source.split('\n').length} lines • Click ⚙️ to edit
-            </Text>
-          </Stack>
-        </Box>
-        
         {error ? (
           <Box padding="space.200" backgroundColor="color.background.danger" borderRadius="border.radius.200">
             <Text color="color.text.danger">Error: {error}</Text>
