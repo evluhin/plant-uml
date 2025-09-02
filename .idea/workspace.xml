@@ -4,25 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Plugin is visible">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Forge_Tunnel.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Local_Renderer.xml" beforeDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Rendering works">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/manifest.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/resolvers/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/ui-kit2/index.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/handler.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/handlers/health.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/handlers/render.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/types/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/jwt-mock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/jwt.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/plantuml-mock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/utils/plantuml.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -240,7 +224,8 @@
       <workItem from="1756733680778" duration="3619000" />
       <workItem from="1756737375186" duration="9045000" />
       <workItem from="1756746646655" duration="1620000" />
-      <workItem from="1756755074614" duration="2917000" />
+      <workItem from="1756755074614" duration="3366000" />
+      <workItem from="1756811110716" duration="51000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -306,7 +291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756740564954</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Rendering works">
+      <option name="closed" value="true" />
+      <created>1756758836086</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1756758836086</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,7 +325,8 @@
     <MESSAGE value="Not deprecated but loading" />
     <MESSAGE value="Hello world" />
     <MESSAGE value="Plugin is visible" />
-    <option name="LAST_COMMIT_MESSAGE" value="Plugin is visible" />
+    <MESSAGE value="Rendering works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rendering works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -14,9 +14,11 @@ const App = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const result = await invoke('renderDiagram', { source: editingSource });
+      const textarea = document.getElementById('plantuml-editor');
+      const sourceToRender = textarea ? textarea.value : editingSource;
+      const result = await invoke('renderDiagram', { source: sourceToRender });
       if (result.success) {
-        setSource(editingSource);
+        setSource(sourceToRender);
         setDiagramUrl(result.diagramUrl);
         setIsEditing(false);
       } else {
@@ -40,11 +42,12 @@ const App = () => {
         <Stack space="space.300">
           <Text weight="bold">Edit PlantUML Diagram</Text>
           <TextArea
-            value={editingSource}
-            onChange={(e) => setEditingSource(e.target.value)}
+            defaultValue={editingSource}
             placeholder="@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml"
             minimumRows={15}
             isMonospaced={true}
+            name="source"
+            id="plantuml-editor"
           />
           {error && (
             <Box padding="space.200" backgroundColor="color.background.danger" borderRadius="border.radius.200">
