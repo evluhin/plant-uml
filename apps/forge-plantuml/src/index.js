@@ -3,36 +3,39 @@ const jwt = require('jsonwebtoken');
 const { storage } = require('@forge/api');
 const crypto = require('crypto');
 
-exports.renderDiagram = async (req) => {
-  console.log('=== renderDiagram called ===');
-  console.log('Full request:', JSON.stringify(req, null, 2));
-  
-  const source = req.call?.payload?.source || req.payload?.source;
-  console.log('Extracted source:', source);
-  
-  if (!source) {
-    console.log('No source found, returning empty object');
-    return {};
+const CACHE_VERSION = 'v3';
+
+const isValidDiagram = (data, format) => {
+  if (format === 'png') {
+    // PNG should be base64 encoded binary data
+    return data && data.length > 1000; // minimum size for real PNG
+  } else {
+    // SVG validation
+    return data && 
+           data.includes('<svg') && 
+           data.includes('</svg>') && 
+           !data.includes('Simple Box') && // fallback detection
+           data.length > 500; // minimum size for real diagram
   }
+};
+
+exports.renderDiagram = async (req) => {
+  const source = req.call?.payload?.source || req.payload?.source;
   
-  if (!source.trim()) {
-    console.log('Empty source provided');
+  if (!source?.trim()) {
     return { success: false, error: 'No PlantUML source provided' };
   }
 
   try {
-    // Generate hash for caching
+    // Generate hash for caching with version
     const sourceHash = crypto.createHash('sha256').update(source).digest('hex');
-    const cacheKey = `diagram_${sourceHash}`;
+    const cacheKey = `${CACHE_VERSION}_diagram_${sourceHash}`;
     
     // Check cache first
     const cached = await storage.get(cacheKey);
     if (cached) {
-      console.log('Returning cached diagram for hash:', sourceHash.substring(0, 8));
       return { success: true, diagramUrl: cached.diagramUrl, timestamp: cached.timestamp, cached: true };
     }
-    
-    console.log('Rendering new diagram for hash:', sourceHash.substring(0, 8));
     
     // Generate JWT token
     const jwtSecret = process.env.RENDERER_JWT_SECRET || 'dev-secret';
@@ -49,7 +52,6 @@ exports.renderDiagram = async (req) => {
 
     // Call renderer
     const rendererUrl = process.env.RENDERER_URL || 'https://pb3hubgska.execute-api.eu-north-1.amazonaws.com/dev';
-    console.log('Calling Lambda at:', rendererUrl);
     
     const response = await api.fetch(`${rendererUrl}/render`, {
       method: 'POST',
@@ -60,9 +62,6 @@ exports.renderDiagram = async (req) => {
       body: JSON.stringify({ source, format: 'svg' })
     });
 
-    console.log('Lambda response status:', response.status);
-    console.log('Lambda response headers:', response.headers);
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Lambda error response:', errorText);
@@ -70,19 +69,43 @@ exports.renderDiagram = async (req) => {
     }
 
     const result = await response.text();
-    console.log('Lambda response length:', result.length);
-    console.log('Lambda response preview:', result.substring(0, 200));
+    
+    // Validate diagram before caching
+    if (!isValidDiagram(result, 'svg')) {
+      return { success: false, error: 'Invalid diagram generated' };
+    }
+    
     const timestamp = Date.now();
     const diagramUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(result)}`;
     
-    // Cache the result
+    // Cache only valid results
     await storage.set(cacheKey, { diagramUrl, timestamp });
-    console.log('Cached diagram with hash:', sourceHash.substring(0, 8));
     
     return { success: true, diagramUrl, timestamp };
     
   } catch (error) {
     console.error('PlantUML render error:', error);
     return { success: false, error: error.message || 'Unknown error' };
+  }
+};
+
+exports.refreshDiagram = async (req) => {
+  const source = req.call?.payload?.source || req.payload?.source;
+  
+  if (!source?.trim()) {
+    return { success: false, error: 'No source provided' };
+  }
+  
+  try {
+    // Delete from cache
+    const sourceHash = crypto.createHash('sha256').update(source).digest('hex');
+    const cacheKey = `${CACHE_VERSION}_diagram_${sourceHash}`;
+    await storage.delete(cacheKey);
+    
+    // Render fresh
+    return await exports.renderDiagram(req);
+  } catch (error) {
+    console.error('Refresh diagram error:', error);
+    return { success: false, error: error.message };
   }
 };

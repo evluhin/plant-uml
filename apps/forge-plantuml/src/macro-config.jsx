@@ -49,8 +49,6 @@ const ConfigApp = () => {
     setSource(code);
   };
 
-  const hasExistingDiagram = source.trim() && source !== '@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml';
-
   return (
     <Stack space="space.200">
       {/* Header */}
@@ -59,27 +57,6 @@ const ConfigApp = () => {
           <Heading size="medium">PlantUML Editor</Heading>
         </Stack>
       </Box>
-
-      {/* Quick Templates - only for new diagrams */}
-      {!hasExistingDiagram && (
-        <Box paddingInline="space.200">
-          <Stack space="space.100">
-            <Text weight="medium" size="small">Quick Start</Text>
-            <Stack direction="horizontal" space="space.100" wrap>
-              {exampleDiagrams.map((example, index) => (
-                <Button
-                  key={index}
-                  onClick={() => insertExample(example.code)}
-                  appearance="subtle"
-                  size="compact"
-                >
-                  {example.name}
-                </Button>
-              ))}
-            </Stack>
-          </Stack>
-        </Box>
-      )}
 
       {/* Editor */}
       <Box paddingInline="space.200">
@@ -90,7 +67,7 @@ const ConfigApp = () => {
           value={source}
           onChange={(e) => setSource(e.target.value)}
           placeholder="@startuml&#10;Alice -> Bob: Hello World&#10;Bob --> Alice: Hi there!&#10;@enduml"
-          minimumRows={hasExistingDiagram ? 18 : 12}
+          minimumRows={15}
           isMonospaced={true}
           resize="vertical"
         />
