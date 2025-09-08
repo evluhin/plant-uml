@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ForgeReconciler, { Text, Button, Stack, Box, Image, useConfig, Inline, Tooltip } from '@forge/react';
+import ForgeReconciler, { Text, Button, Stack, Box, Image, useConfig, Inline, Tooltip, Pressable, xcss } from '@forge/react';
 import { invoke } from '@forge/bridge';
 
 const App = () => {
@@ -96,25 +96,21 @@ const App = () => {
             </Box>
           </Stack>
         ) : diagramUrl ? (
-          <Stack space="space.100">
-            <Inline space="space.100" alignInline="end">
-              <Tooltip content="Regenerate">
-                <Button
-                  onClick={handleRefresh}
-                  appearance="subtle"
-                  isLoading={isRefreshing}
-                  size="compact"
-                >
-                  {isRefreshing ? '⟳' : '↻'}
-                </Button>
-              </Tooltip>
+          <Box 
+            backgroundColor="color.background.neutral.subtle" 
+            borderRadius="border.radius.200"
+            padding="space.200"
+          >
+            <Inline alignInline="end">
+              <Button
+                onClick={handleRefresh}
+                appearance="subtle"
+                isLoading={isRefreshing}
+                size="compact"
+                iconBefore="refresh"
+              />
             </Inline>
-            <Box 
-              backgroundColor="color.background.neutral.subtle" 
-              borderRadius="border.radius.200"
-              padding="space.200"
-              style={{ textAlign: 'center' }}
-            >
+            <Box style={{ textAlign: 'center' }}>
               <Image 
                 key={diagramUrl} 
                 src={diagramUrl} 
@@ -126,7 +122,7 @@ const App = () => {
                 }}
               />
             </Box>
-          </Stack>
+          </Box>
         ) : (
           <Box padding="space.200" backgroundColor="color.background.neutral" borderRadius="border.radius.200">
             <Text color="color.text.subtle">Diagram will appear here after configuration.</Text>
