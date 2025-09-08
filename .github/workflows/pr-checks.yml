@@ -1,0 +1,48 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - 'services/renderer/**'
+      - 'apps/forge-plantuml/**'
+      - 'package*.json'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '11'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint
+        run: npm run lint
+      
+      - name: Test Forge app
+        run: |
+          cd apps/forge-plantuml
+          npm test
+      
+      - name: Test Java Lambda
+        run: |
+          cd services/renderer
+          mvn test
+      
+      - name: Validate SAM template
+        run: |
+          cd services/renderer
+          sam validate

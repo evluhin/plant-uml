@@ -1,133 +1,75 @@
-name: Deploy to Production
+name: Deploy Production
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm:
-        description: 'Type "deploy" to confirm production deployment'
-        required: true
-        default: ''
-
-env:
-  NODE_VERSION: '20'
-  SAM_CLI_TELEMETRY: 0
-  AWS_DEFAULT_REGION: eu-north-1
+  push:
+    branches: [main]
+    paths:
+      - 'services/renderer/**'
+      - 'apps/forge-plantuml/**'
+      - 'package*.json'
+  workflow_dispatch: # Manual trigger
 
 jobs:
-  validate-input:
+  deploy-prod:
     runs-on: ubuntu-latest
-    steps:
-      - name: Validate confirmation
-        if: ${{ github.event.inputs.confirm != 'deploy' }}
-        run: |
-          echo "❌ Production deployment not confirmed"
-          echo "Please type 'deploy' in the confirmation field"
-          exit 1
-
-  deploy-renderer:
-    runs-on: ubuntu-latest
-    needs: validate-input
     environment: production
-    outputs:
-      renderer-url: ${{ steps.deploy.outputs.renderer-url }}
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Python for SAM
-        uses: actions/setup-python@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '11'
       
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
-        with:
-          use-installer: true
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-      
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          cd services/renderer
-          sam build --cached
-      
-      - name: Deploy renderer to production
-        id: deploy
-        run: |
-          cd services/renderer
-          sam deploy \
-            --config-env prod \
-            --parameter-overrides "Environment=prod JWTSecretParameter=${{ secrets.RENDERER_JWT_SECRET_PARAM }}" \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset
-          
-          RENDERER_URL=$(aws cloudformation describe-stacks \
-            --stack-name plantuml-renderer-prod \
-            --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
-            --output text)
-          echo "renderer-url=${RENDERER_URL}" >> $GITHUB_OUTPUT
-
-  deploy-forge:
-    runs-on: ubuntu-latest
-    needs: deploy-renderer
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-      
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          cd apps/forge-plantuml
-          npm run build
-      
-      - name: Install Forge CLI
-        run: npm install -g @forge/cli
-      
-      - name: Deploy Forge app to production
-        env:
-          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
-          FORGE_EMAIL: ${{ secrets.FORGE_EMAIL }}
-        run: |
-          cd apps/forge-plantuml
-          forge deploy --environment ${{ secrets.FORGE_ENV_PROD }} --non-interactive
-          forge install --product confluence --environment ${{ secrets.FORGE_ENV_PROD }} --non-interactive
-
-  test-production:
-    runs-on: ubuntu-latest
-    needs: [deploy-renderer, deploy-forge]
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          aws-region: ${{ vars.AWS_REGION }}
       
       - name: Install dependencies
-        run: npm install jsonwebtoken
+        run: npm ci
       
-      - name: Run production tests
+      - name: Deploy Lambda to prod
+        run: |
+          cd services/renderer
+          sam build
+          sam deploy --config-env prod --no-confirm-changeset
+      
+      - name: Deploy Forge app to production
+        run: |
+          cd apps/forge-plantuml
+          echo "${{ secrets.FORGE_API_TOKEN }}" | npx @forge/cli login --email ${{ vars.FORGE_EMAIL }}
+          npx @forge/cli deploy --environment production
+      
+      - name: Production smoke test
+        run: |
+          # Wait for deployment
+          sleep 30
+          # Run smoke tests
+          ./scripts/smoke-test.sh ${{ vars.RENDERER_URL_PROD }}
+      
+      - name: Create release
+        if: success()
+        uses: actions/create-release@v1
         env:
-          RENDERER_URL: ${{ needs.deploy-renderer.outputs.renderer-url }}
-          RENDERER_JWT_SECRET: ${{ secrets.RENDERER_JWT_SECRET }}
-          CI_ENVIRONMENT_NAME: production
-        run: node scripts/self-test.js
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            Automated release from main branch
+            Commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
