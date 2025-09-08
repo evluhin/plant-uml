@@ -1,6 +1,6 @@
 # PlantUML Renderer Service
 
-Java 11 AWS Lambda function that renders PlantUML diagrams to SVG format.
+Java 11 AWS Lambda function with SnapStart that renders PlantUML diagrams to SVG format with ~1-2s cold start.
 
 ## Architecture
 
@@ -80,9 +80,12 @@ sam deploy --config-env prod
 Environment variables:
 - `NODE_ENV`: Set to "development" to skip JWT validation
 - `JWT_SECRET_PARAM`: SSM parameter path for JWT secret
+- `GRAPHVIZ_DOT`: Path to Graphviz dot binary (from layer)
+- `PLANTUML_JAR`: Path to PlantUML JAR (from layer)
 
 ## Security
 
 - JWT HS256 token validation (skipped in development)
 - CORS enabled for Atlassian domains
-- Headless Java mode for server environment
+- SnapStart optimization for faster cold starts
+- PlantUML library integrated via Maven dependency

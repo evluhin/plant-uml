@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Adjust UI and added refresh diagram and it works">
-      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Update lambda type">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/macro-config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/macro-config.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,7 +233,7 @@
       <workItem from="1757002905107" duration="278000" />
       <workItem from="1757064116145" duration="10974000" />
       <workItem from="1757079999263" duration="1827000" />
-      <workItem from="1757334525124" duration="1663000" />
+      <workItem from="1757334525124" duration="3104000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -365,7 +363,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757339398726</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Reset cache checkbox added">
+      <option name="closed" value="true" />
+      <created>1757340174407</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1757340174407</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Update lambda type">
+      <option name="closed" value="true" />
+      <created>1757340925051</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1757340925051</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -399,7 +413,9 @@
     <MESSAGE value="Adjust edit window" />
     <MESSAGE value="Adjust UI and added refresh diagram" />
     <MESSAGE value="Adjust UI and added refresh diagram and it works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adjust UI and added refresh diagram and it works" />
+    <MESSAGE value="Reset cache checkbox added" />
+    <MESSAGE value="Update lambda type" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update lambda type" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,6 +1,6 @@
 # PlantUML Confluence Cloud App
 
-A production-ready Atlassian Forge app that enables PlantUML diagram editing and rendering in Confluence Cloud, with AWS Lambda-based rendering service.
+A production-ready Atlassian Forge app that enables PlantUML diagram editing and rendering in Confluence Cloud, with Java 11 AWS Lambda rendering service and SnapStart optimization.
 
 ## 🚀 Quick Start (10 minutes)
 
@@ -47,17 +47,15 @@ npm install
 
 # Create JWT secret in AWS SSM
 aws ssm put-parameter \
-  --profile plant-uml \
   --name "/plantuml/renderer/jwt-secret" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
   --description "JWT secret for PlantUML renderer"
 
-# Deploy renderer service
+# Deploy renderer service with SnapStart
 cd services/renderer
 sam build
 sam deploy --guided  # First time only, saves config
-# sam deploy        # Subsequent deployments (automated)
 
 # Copy the API URL from outputs
 export RENDERER_URL="https://your-api-id.execute-api.region.amazonaws.com/dev"
@@ -103,10 +101,10 @@ export FORGE_API_TOKEN="your-api-token-here"
 
 ### Components
 
-- **Forge App** (`apps/forge-plantuml/`): Forge UI-based macro with text editor
-- **Renderer Service** (`services/renderer/`): Java 11 AWS Lambda with built-in PlantUML
+- **Forge App** (`apps/forge-plantuml/`): Forge UI-based macro with text editor and cache reset option
+- **Renderer Service** (`services/renderer/`): Java 11 AWS Lambda with PlantUML library and SnapStart
 - **Security**: JWT HS256 tokens with 60s TTL, CORS restrictions
-- **Storage**: Hash-based attachment caching in Forge storage
+- **Storage**: Hash-based SVG caching in Forge storage (1GB per client)
 
 ## 🛠️ Development
 
@@ -247,7 +245,6 @@ NEW_SECRET=$(openssl rand -base64 32)
 
 # Update SSM parameter
 aws ssm put-parameter \
-  --profile plant-uml \
   --name "/plantuml/renderer/jwt-secret" \
   --value "${NEW_SECRET}" \
   --type "SecureString" \
