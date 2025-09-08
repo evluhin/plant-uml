@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Update CI/CD">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Clean up">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPMENT.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile.forge" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/QUICKSTART.md" beforeDir="false" afterPath="$PROJECT_DIR$/QUICKSTART.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-forge.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/smoke-test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/smoke-test.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,7 +234,7 @@
       <workItem from="1757002905107" duration="278000" />
       <workItem from="1757064116145" duration="10974000" />
       <workItem from="1757079999263" duration="1827000" />
-      <workItem from="1757334525124" duration="4796000" />
+      <workItem from="1757334525124" duration="8135000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -411,7 +404,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757342760767</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Clean up">
+      <option name="closed" value="true" />
+      <created>1757343276451</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1757343276451</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Clean up">
+      <option name="closed" value="true" />
+      <created>1757343287394</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1757343287394</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -448,7 +457,8 @@
     <MESSAGE value="Update lambda type" />
     <MESSAGE value="Update docs" />
     <MESSAGE value="Update CI/CD" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update CI/CD" />
+    <MESSAGE value="Clean up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

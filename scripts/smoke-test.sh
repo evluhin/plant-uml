@@ -14,14 +14,24 @@ else
     exit 1
 fi
 
-# Test 2: Simple diagram rendering (only if not localhost - requires JWT)
-if [[ "$RENDERER_URL" != *"localhost"* ]]; then
-    echo "Testing diagram rendering..."
+# Test 2: Simple diagram rendering
+echo "Testing diagram rendering..."
+TEST_PAYLOAD='{"source":"@startuml\nAlice -> Bob: Test\n@enduml","format":"svg"}'
+
+if [[ "$RENDERER_URL" == *"localhost"* ]]; then
+    # Local development - no JWT needed
+    RENDER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$RENDERER_URL/render" \
+        -H "Content-Type: application/json" \
+        -d "$TEST_PAYLOAD" || echo "000")
     
-    # Create a simple JWT for testing (in real CI, this would be properly signed)
-    TEST_PAYLOAD='{"source":"@startuml\nAlice -> Bob: Test\n@enduml","format":"svg"}'
-    
-    # For now, just test that the endpoint exists and returns 401 (expected without proper JWT)
+    if [[ "$RENDER_STATUS" == "200" ]]; then
+        echo "✅ Render endpoint working (local development mode)"
+    else
+        echo "❌ Render endpoint failed with status: $RENDER_STATUS"
+        exit 1
+    fi
+else
+    # Deployed environment - JWT required, expect 401 without proper JWT
     RENDER_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$RENDERER_URL/render" \
         -H "Content-Type: application/json" \
         -d "$TEST_PAYLOAD" || echo "000")
@@ -29,7 +39,7 @@ if [[ "$RENDERER_URL" != *"localhost"* ]]; then
     if [[ "$RENDER_STATUS" == "401" ]]; then
         echo "✅ Render endpoint accessible (401 expected without JWT)"
     elif [[ "$RENDER_STATUS" == "200" ]]; then
-        echo "✅ Render endpoint working (200 - development mode?)"
+        echo "✅ Render endpoint working (development environment?)"
     else
         echo "❌ Render endpoint failed with status: $RENDER_STATUS"
         exit 1
