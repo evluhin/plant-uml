@@ -47,6 +47,8 @@ Resources:
       FunctionName: !Sub plantuml-renderer-${Environment}
       CodeUri: .
       Handler: com.plantuml.Handler::handleRequest
+      SnapStart:
+        ApplyOn: PublishedVersions
       Layers:
         - !Ref PlantUMLLayer
       Environment:
@@ -56,6 +58,7 @@ Resources:
       Policies:
         - SSMParameterReadPolicy:
             ParameterName: !Ref JWTSecretParameter
+      AutoPublishAlias: live
       Events:
         RenderApi:
           Type: HttpApi
@@ -107,3 +110,9 @@ Outputs:
     Value: !GetAtt RendererFunction.Arn
     Export:
       Name: !Sub plantuml-renderer-arn-${Environment}
+  
+  FunctionAliasArn:
+    Description: Lambda Function Alias ARN (for SnapStart)
+    Value: !Ref RendererFunction.Alias
+    Export:
+      Name: !Sub plantuml-renderer-alias-arn-${Environment}
