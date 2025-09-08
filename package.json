@@ -13,6 +13,7 @@
     "lint": "npm run lint --workspaces",
     "fmt": "npm run fmt --workspaces",
     "clean": "npm run clean --workspaces && rm -rf node_modules",
+    "deploy": "./deploy.sh",
     "prepare": "husky install"
   },
   "devDependencies": {

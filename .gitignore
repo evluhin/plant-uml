@@ -72,6 +72,12 @@ __tests__/__snapshots__/
 samconfig.toml
 *.zip
 
+# Java
+target/
+*.class
+*.jar
+!services/renderer/layers/**/*.jar
+
 # Temporary files
 tmp/
 temp/
@@ -158,6 +164,11 @@ test.svg
 test.png
 config.local.*
 secrets.local.*
+img.png
+test-*.js
+verify-*.js
+manual-deploy.sh
+quick-test.sh
 
 # Archive files
 *.tar

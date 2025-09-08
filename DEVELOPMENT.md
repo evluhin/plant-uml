@@ -2,157 +2,129 @@
 
 ## 🚀 Quick Start
 
-### 1. Setup Development Environment
+### Prerequisites
+- Java 11+ (for renderer development)
+- Node.js 18+ and npm 8+
+- AWS CLI configured
+- AWS SAM CLI installed
+
+### Setup
 
 ```bash
-# Configure AWS CLI with plant-uml profile
-aws configure --profile plant-uml
-
 # Install dependencies
 npm install
 
-# Setup renderer for local development
+# Deploy renderer service
 cd services/renderer
-bash dev-setup.sh
+sam build
+sam deploy --guided  # First time only
 
-# Test everything works
-npm run test:local
-```
-
-### 2. Start Development Servers
-
-```bash
-# Terminal 1: Renderer with hot reload
-cd services/renderer
-npm run dev     # TypeScript watch mode
-
-# Terminal 2: SAM Local API
-cd services/renderer  
-npm run local   # Starts on http://localhost:3001
-
-# Terminal 3: Forge app development
-cd apps/forge-plantuml
-npx @forge/cli tunnel  # Connects to Confluence
-```
-
-## 🧪 Testing
-
-### Local Testing
-
-```bash
-# Test renderer locally
-cd services/renderer
-npm run test:local
-
-# Run unit tests
-npm run test
-
-# Run integration tests
-npm run test:integration
-```
-
-### Manual Testing
-
-```bash
-# Test health endpoint
-curl http://localhost:3001/health
-
-# Test SVG rendering
-curl -X POST http://localhost:3001/render \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer test-token" \
-  -d '{
-    "source": "@startuml\nAlice -> Bob: Hello\n@enduml",
-    "format": "svg"
-  }'
+# Deploy Forge app
+cd ../apps/forge-plantuml
+npx @forge/cli deploy
+npx @forge/cli install --product confluence
 ```
 
 ## 🏗️ Architecture
 
-### Development vs Production
+### Components
 
-| Component | Development | Production |
-|-----------|-------------|------------|
-| **JWT Auth** | Mock (bypassed) | Real SSM + verification |
-| **PlantUML** | Mock SVG/PNG | Real JAR + Graphviz |
-| **Storage** | In-memory | AWS Lambda layers |
-| **Logs** | Console | CloudWatch |
+1. **Forge App** (`apps/forge-plantuml/`)
+   - React-based macro UI
+   - Cache reset checkbox in configuration
+   - SVG diagram display
+
+2. **Renderer Service** (`services/renderer/`)
+   - Java 11 AWS Lambda with SnapStart
+   - PlantUML Maven dependency
+   - JWT authentication
+   - ~1-2s cold start time
 
 ### File Structure
 
 ```
 services/renderer/
+├── src/main/java/com/plantuml/
+│   └── Handler.java           # Lambda handler
+├── pom.xml                    # Maven dependencies
+├── template.yaml              # SAM template with SnapStart
+└── test-loop.sh              # Local testing script
+
+apps/forge-plantuml/
 ├── src/
-│   ├── handlers/
-│   │   ├── render.ts      # Main PlantUML handler
-│   │   └── health.ts      # Health check
-│   ├── utils/
-│   │   ├── jwt-mock.ts    # Development JWT bypass
-│   │   ├── plantuml-mock.ts # Development PlantUML mock
-│   │   ├── jwt.ts         # Production JWT verification
-│   │   └── plantuml.ts    # Production PlantUML rendering
-│   └── types/
-├── layers/plantuml-layer/ # PlantUML JAR + Graphviz
-├── tests/
-├── dev-setup.sh          # Development setup script
-├── test-local.sh         # Local testing script
-└── template.yaml         # SAM template
+│   ├── index.js              # Backend resolvers
+│   ├── frontend/index.jsx    # React UI
+│   └── macro-config.jsx      # Configuration dialog
+└── manifest.yml              # Forge app manifest
+```
+
+## 🧪 Testing
+
+### Local Renderer Testing
+
+```bash
+cd services/renderer
+bash test-loop.sh
+```
+
+### Manual API Testing
+
+```bash
+# Health check
+curl http://localhost:3001/health
+
+# Render diagram (requires JWT)
+curl -X POST http://localhost:3001/render \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -d '{"source":"@startuml\nAlice -> Bob: Hello\n@enduml","format":"svg"}'
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-#### Development (.env.local)
-```json
-{
-  "RendererFunction": {
-    "JWT_SECRET_PARAM": "/test/secret",
-    "NODE_ENV": "development",
-    "AWS_REGION": "eu-north-1"
-  }
-}
-```
+- `JWT_SECRET_PARAM`: SSM parameter path for JWT secret
+- `NODE_ENV`: Set to "development" to skip JWT validation
+- `GRAPHVIZ_DOT`: Path to Graphviz binary (from layer)
+- `PLANTUML_JAR`: Path to PlantUML JAR (from layer)
 
-#### Production
-```bash
-JWT_SECRET_PARAM=/plantuml/renderer/jwt-secret
-NODE_ENV=production
-LOG_PAYLOADS=false
-```
+### Cache Reset Feature
 
-### Mock vs Real Components
-
-The development setup uses mocks for external dependencies:
-
-1. **JWT Mock**: Bypasses SSM and JWT verification
-2. **PlantUML Mock**: Returns sample SVG/PNG without PlantUML JAR
-3. **Local Layer**: Downloads real PlantUML JAR for production testing
+Users can reset diagram cache through the macro configuration:
+- Checkbox: "Reset cache"
+- Help text: "Check this only if the diagram appears broken or outdated"
+- Backend handles `resetCache` flag to clear Forge storage
 
 ## 🚀 Deployment
 
-### Development Deployment
+### Simple Deployment
 
 ```bash
-# Deploy renderer to AWS dev environment
-cd services/renderer
-sam deploy --config-env dev
+./deploy.sh
+```
 
-# Deploy Forge app to development
-cd apps/forge-plantuml
+### Manual Deployment
+
+```bash
+# 1. Deploy renderer
+cd services/renderer
+sam build
+sam deploy
+
+# 2. Deploy Forge app
+cd ../apps/forge-plantuml
 npx @forge/cli deploy
-npx @forge/cli install --product confluence
 ```
 
 ### Production Deployment
 
 ```bash
-# Deploy renderer to production
+# Deploy to production environment
 cd services/renderer
 sam deploy --config-env prod
 
-# Deploy Forge app to production
-cd apps/forge-plantuml
+cd ../apps/forge-plantuml
 npx @forge/cli deploy --environment production
 npx @forge/cli install --product confluence --environment production
 ```
@@ -161,78 +133,57 @@ npx @forge/cli install --product confluence --environment production
 
 ### Common Issues
 
-#### "Port 3001 already in use"
-```bash
-# Kill existing SAM process
-lsof -ti:3001 | xargs kill -9
-```
-
-#### "Module not found" errors
-```bash
-# Rebuild SAM with dependencies
-cd services/renderer
-sam build
-```
+#### "Cold start too slow"
+- SnapStart is enabled in template.yaml
+- Check Lambda memory allocation (1024MB recommended)
 
 #### "JWT verification failed"
-- In development: Check NODE_ENV=development is set
-- In production: Verify JWT secret in SSM Parameter Store
+- Verify JWT secret in SSM Parameter Store
+- Check NODE_ENV=development for local testing
 
 #### "PlantUML rendering failed"
-- In development: Uses mock renderer (expected)
-- In production: Check PlantUML layer and Graphviz binaries
+- Check PlantUML layer deployment
+- Verify Java 11 runtime configuration
 
-### Debug Mode
+### Debug Commands
 
 ```bash
-# Enable verbose logging
-export LOG_PAYLOADS=true
-npm run local
+# Check Lambda logs
+sam logs --name plantuml-renderer-dev --tail
 
-# Check SAM logs
-sam logs --name RendererFunction --tail
+# Test local SAM
+cd services/renderer
+sam local start-api --port 3001
 ```
 
-## 📊 Monitoring
+## 📊 Performance
 
-### Local Development
+### Optimizations Applied
 
-- Health endpoint: `http://localhost:3001/health`
-- SAM logs: Displayed in terminal
-- Metrics: Logged to console
+- **SnapStart**: Reduces cold start from ~6s to ~1-2s
+- **Memory**: 1024MB for faster initialization
+- **Caching**: Hash-based SVG caching in Forge storage
+- **Architecture**: x86_64 for compatibility
 
-### Production
+### Storage Limits
 
-- CloudWatch logs: `/aws/lambda/plantuml-renderer-{env}`
-- Metrics: `PlantUML/Renderer` namespace
-- Alarms: Error rate, duration, cold starts
+- **Forge Storage**: 1GB per client (Confluence instance)
+- **Capacity**: ~5,000-10,000 unique diagrams per client
+- **Future**: Can migrate to S3 if needed
 
 ## 🤝 Contributing
 
 ### Development Workflow
 
-1. **Setup**: Run `dev-setup.sh`
-2. **Develop**: Use watch modes for hot reload
-3. **Test**: Run `test-local.sh` before commits
-4. **Deploy**: Test in dev environment first
-5. **Production**: Deploy after thorough testing
+1. Make changes to code
+2. Test locally with `test-loop.sh`
+3. Deploy to dev environment
+4. Test in Confluence
+5. Deploy to production
 
 ### Code Standards
 
-- **TypeScript**: Strict mode enabled
-- **Linting**: ESLint with security rules
-- **Testing**: Jest for unit/integration tests
-- **Formatting**: Prettier for consistent style
-
-### Git Hooks
-
-- **Pre-commit**: Lint and format code
-- **Pre-push**: Run tests
-- **Commit-msg**: Conventional commit format
-
-### CI/CD
-
-- **GitHub Actions**: Automated testing and deployment
-- **Staging**: Auto-deploy on main/develop push
-- **Production**: Manual deployment with confirmation
-- See [GitHub Actions Setup](../docs/GITHUB_ACTIONS_SETUP.md) for configuration
+- Java 11 with Maven
+- React with Forge UI Kit components
+- JWT HS256 authentication
+- SVG output format

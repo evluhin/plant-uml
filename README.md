@@ -2,7 +2,11 @@
 
 A production-ready Atlassian Forge app that enables PlantUML diagram editing and rendering in Confluence Cloud, with Java 11 AWS Lambda rendering service and SnapStart optimization.
 
-## 🚀 Quick Start (10 minutes)
+## 🚀 Quick Start (5 minutes)
+
+**New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for the fastest setup.
+
+### Detailed Setup (10 minutes)
 
 ### Prerequisites
 
