@@ -1,29 +1,16 @@
 # Development Guide
 
-## 🚀 Quick Start
+## 🚀 Quick Setup
+
+See [QUICKSTART.md](./QUICKSTART.md) for initial setup, then return here for development.
+
+## 🏗️ Development Environment
 
 ### Prerequisites
 - Java 11+ (for renderer development)
 - Node.js 18+ and npm 8+
 - AWS CLI configured
 - AWS SAM CLI installed
-
-### Setup
-
-```bash
-# Install dependencies
-npm install
-
-# Deploy renderer service
-cd services/renderer
-sam build
-sam deploy --guided  # First time only
-
-# Deploy Forge app
-cd ../apps/forge-plantuml
-npx @forge/cli deploy
-npx @forge/cli install --product confluence
-```
 
 ## 🏗️ Architecture
 
@@ -175,11 +162,12 @@ sam local start-api --port 3001
 
 ### Development Workflow
 
-1. Make changes to code
-2. Test locally with `test-loop.sh`
-3. Deploy to dev environment
-4. Test in Confluence
-5. Deploy to production
+1. Create feature branch from `develop`
+2. Make changes and test locally
+3. Create PR to `develop` (triggers auto-deploy to dev)
+4. Test in dev environment
+5. Create PR to `main` for production
+6. Manual approval and deploy to production
 
 ### Code Standards
 
@@ -187,3 +175,38 @@ sam local start-api --port 3001
 - React with Forge UI Kit components
 - JWT HS256 authentication
 - SVG output format
+
+## 🚀 CI/CD Pipeline
+
+### GitHub Actions Workflows
+- **PR Checks**: Lint, test, validate on pull requests
+- **Deploy Development**: Auto-deploy to dev on `develop` branch
+- **Deploy Production**: Manual deploy to prod on `main` branch
+
+### Required GitHub Secrets
+```bash
+# AWS
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+
+# Forge
+FORGE_EMAIL=your-email@example.com
+FORGE_API_TOKEN=your-api-token
+
+# Variables
+AWS_REGION=eu-north-1
+RENDERER_URL_DEV=https://dev-api.execute-api.region.amazonaws.com/dev
+RENDERER_URL_PROD=https://prod-api.execute-api.region.amazonaws.com/prod
+```
+
+### Branch Strategy
+```
+feature/* → develop (auto-deploy dev) → main (manual deploy prod)
+```
+
+### Cost Optimization
+- Triggers only on relevant file changes
+- Simple smoke tests (health endpoint)
+- Expected cost: ~$2-10/month
+
+See [docs/GITHUB_SETUP.md](./docs/GITHUB_SETUP.md) for detailed setup.
