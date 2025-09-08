@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Adjust UI and added refresh diagram">
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Adjust UI and added refresh diagram and it works">
       <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/frontend/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/macro-config.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/macro-config.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,7 +235,7 @@
       <workItem from="1757002905107" duration="278000" />
       <workItem from="1757064116145" duration="10974000" />
       <workItem from="1757079999263" duration="1827000" />
-      <workItem from="1757334525124" duration="708000" />
+      <workItem from="1757334525124" duration="1663000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -355,7 +357,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757079864086</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Adjust UI and added refresh diagram and it works">
+      <option name="closed" value="true" />
+      <created>1757339398726</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1757339398726</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,7 +398,8 @@
     <MESSAGE value="Everything works, removed UI labels" />
     <MESSAGE value="Adjust edit window" />
     <MESSAGE value="Adjust UI and added refresh diagram" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adjust UI and added refresh diagram" />
+    <MESSAGE value="Adjust UI and added refresh diagram and it works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adjust UI and added refresh diagram and it works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

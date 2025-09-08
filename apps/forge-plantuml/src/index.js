@@ -21,6 +21,7 @@ const isValidDiagram = (data, format) => {
 
 exports.renderDiagram = async (req) => {
   const source = req.call?.payload?.source || req.payload?.source;
+  const resetCache = req.call?.payload?.resetCache || req.payload?.resetCache;
   
   if (!source?.trim()) {
     return { success: false, error: 'No PlantUML source provided' };
@@ -31,10 +32,17 @@ exports.renderDiagram = async (req) => {
     const sourceHash = crypto.createHash('sha256').update(source).digest('hex');
     const cacheKey = `${CACHE_VERSION}_diagram_${sourceHash}`;
     
-    // Check cache first
-    const cached = await storage.get(cacheKey);
-    if (cached) {
-      return { success: true, diagramUrl: cached.diagramUrl, timestamp: cached.timestamp, cached: true };
+    // Clear cache if resetCache flag is set
+    if (resetCache) {
+      await storage.delete(cacheKey);
+    }
+    
+    // Check cache first (unless reset was requested)
+    if (!resetCache) {
+      const cached = await storage.get(cacheKey);
+      if (cached) {
+        return { success: true, diagramUrl: cached.diagramUrl, timestamp: cached.timestamp, cached: true };
+      }
     }
     
     // Generate JWT token

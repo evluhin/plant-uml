@@ -6,7 +6,7 @@ const App = () => {
   const config = useConfig();
   const [diagramUrl, setDiagramUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [error, setError] = useState(null);
 
 
@@ -34,26 +34,7 @@ const App = () => {
     }
   }, [source]);
 
-  const handleRefresh = async () => {
-    if (!source) return;
-    
-    setIsRefreshing(true);
-    setError(null);
-    
-    try {
-      const result = await invoke('refreshDiagram', { source });
-      if (result.success) {
-        setDiagramUrl(result.diagramUrl);
-      } else {
-        setError(result.error);
-      }
-    } catch (err) {
-      console.error('refreshDiagram error:', err);
-      setError(err.message);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+
 
   if (isLoading) {
     return (
@@ -83,12 +64,11 @@ const App = () => {
           <Stack space="space.150">
             <Inline space="space.100" alignInline="end">
               <Button 
-                onClick={handleRefresh}
+                onClick={() => window.location.reload()}
                 appearance="primary"
                 size="compact"
-                isLoading={isRefreshing}
               >
-                {isRefreshing ? 'Retrying...' : 'Retry'}
+                Retry
               </Button>
             </Inline>
             <Box padding="space.200" backgroundColor="color.background.danger" borderRadius="border.radius.200">
@@ -100,28 +80,18 @@ const App = () => {
             backgroundColor="color.background.neutral.subtle" 
             borderRadius="border.radius.200"
             padding="space.200"
+            style={{ textAlign: 'center' }}
           >
-            <Inline alignInline="end">
-              <Button
-                onClick={handleRefresh}
-                appearance="subtle"
-                isLoading={isRefreshing}
-                size="compact"
-                iconBefore="refresh"
-              />
-            </Inline>
-            <Box style={{ textAlign: 'center' }}>
-              <Image 
-                key={diagramUrl} 
-                src={diagramUrl} 
-                alt="PlantUML Diagram" 
-                style={{ 
-                  width: '100%', 
-                  maxWidth: '100%', 
-                  height: 'auto'
-                }}
-              />
-            </Box>
+            <Image 
+              key={diagramUrl} 
+              src={diagramUrl} 
+              alt="PlantUML Diagram" 
+              style={{ 
+                width: '100%', 
+                maxWidth: '100%', 
+                height: 'auto'
+              }}
+            />
           </Box>
         ) : (
           <Box padding="space.200" backgroundColor="color.background.neutral" borderRadius="border.radius.200">

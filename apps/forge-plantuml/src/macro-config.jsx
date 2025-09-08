@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import ForgeReconciler, { Text, Button, TextArea, Stack, Box, Heading, Inline } from '@forge/react';
+import ForgeReconciler, { Text, Button, TextArea, Stack, Box, Heading, Inline, Checkbox } from '@forge/react';
 import { view } from '@forge/bridge';
 
 const ConfigApp = () => {
   const [source, setSource] = useState('@startuml\nAlice -> Bob: Hello\nBob -> Alice: Hi there\n@enduml');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetCache, setResetCache] = useState(false);
 
   useEffect(() => {
     view.getContext().then((ctx) => {
@@ -18,11 +19,12 @@ const ConfigApp = () => {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await view.submit({ config: { source: source } });
+      await view.submit({ config: { source: source, resetCache: resetCache } });
     } catch (error) {
       console.error('Submit error:', error);
     } finally {
       setIsSubmitting(false);
+      setResetCache(false); // Reset checkbox after submit
     }
   };
 
@@ -71,6 +73,20 @@ const ConfigApp = () => {
           isMonospaced={true}
           resize="vertical"
         />
+      </Box>
+
+      {/* Reset Cache Option */}
+      <Box paddingInline="space.200">
+        <Stack space="space.050">
+          <Checkbox
+            isChecked={resetCache}
+            onChange={(e) => setResetCache(e.target.checked)}
+            label="Reset cache"
+          />
+          <Text size="small" color="color.text.subtle">
+            Check this only if the diagram appears broken or outdated
+          </Text>
+        </Stack>
       </Box>
 
       {/* Actions */}
