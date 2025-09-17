@@ -14,6 +14,7 @@ on:
 env:
   NODE_VERSION: '20'
   SAM_CLI_TELEMETRY: 0
+  CI: true
 
 jobs:
   # Fast lint and test in parallel

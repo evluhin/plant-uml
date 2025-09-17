@@ -4,7 +4,7 @@
   "description": "PlantUML Forge app for Confluence Cloud",
   "main": "src/index.ts",
   "scripts": {
-    "build": "npx @forge/cli lint",
+    "build": "npm run lint",
     "tunnel": "npx @forge/cli tunnel",
     "test": "jest",
     "lint": "eslint src --ext .js,.ts",
