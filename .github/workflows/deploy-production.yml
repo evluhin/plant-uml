@@ -1,13 +1,14 @@
 name: Deploy Production
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'services/renderer/**'
-      - 'apps/forge-plantuml/**'
-      - 'package*.json'
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch: # Manual trigger only for now
+  # Uncomment below when ready for production auto-deployment
+  # push:
+  #   branches: [master]
+  #   paths:
+  #     - 'services/renderer/**'
+  #     - 'apps/forge-plantuml/**'
+  #     - 'package*.json'
 
 jobs:
   deploy-prod:
@@ -45,13 +46,16 @@ jobs:
         run: |
           cd services/renderer
           sam build
-          sam deploy --config-env prod --no-confirm-changeset
+          sam deploy --config-env prod --no-confirm-changeset --region ${{ vars.AWS_REGION }}
+      
+      - name: Install Forge CLI
+        run: npm install -g @forge/cli@latest
       
       - name: Deploy Forge app to production
         run: |
           cd apps/forge-plantuml
-          echo "${{ secrets.FORGE_API_TOKEN }}" | npx @forge/cli login --email ${{ vars.FORGE_EMAIL }}
-          npx @forge/cli deploy --environment production
+          echo "${{ secrets.FORGE_API_TOKEN }}" | forge login --email ${{ vars.FORGE_EMAIL }}
+          forge deploy --environment production
       
       - name: Production smoke test
         run: |
