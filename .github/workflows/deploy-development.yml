@@ -96,7 +96,7 @@ jobs:
         run: |
           cd services/renderer
           sam build --cached
-          sam deploy --config-env dev --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-dev
+          sam deploy --config-env dev --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-dev --resolve-s3
 
   # Deploy Forge only if app changed
   deploy-forge:
@@ -117,6 +117,9 @@ jobs:
         run: npm install -g @forge/cli@latest
 
       - name: Deploy Forge app to development
+        env:
+          CI: true
+          FORGE_DISABLE_ANALYTICS: true
         run: |
           cd apps/forge-plantuml
           echo "${{ secrets.FORGE_API_TOKEN }}" | forge login --email ${{ vars.FORGE_EMAIL }}
