@@ -3,6 +3,11 @@ name: CI
 on:
   push:
     branches: [master, develop]
+    paths:
+      - 'apps/**'
+      - 'services/**'
+      - 'package*.json'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches: [master, develop]
 

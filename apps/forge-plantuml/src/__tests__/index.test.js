@@ -51,7 +51,21 @@ describe('PlantUML Resolvers', () => {
 
     it('should render new diagram if not cached', async () => {
       const source = '@startuml\nAlice -> Bob\n@enduml';
-      const mockSvg = '<svg>test</svg>';
+      const mockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+        <defs>
+          <style>
+            .actor { fill: #FEFECE; stroke: #A80036; stroke-width: 1.5; }
+            .arrow { stroke: #A80036; stroke-width: 1; fill: none; }
+            .text { font-family: sans-serif; font-size: 13px; fill: #000000; }
+          </style>
+        </defs>
+        <rect class="actor" x="50" y="20" width="80" height="40" rx="5"/>
+        <text class="text" x="90" y="45" text-anchor="middle">Alice</text>
+        <rect class="actor" x="270" y="20" width="80" height="40" rx="5"/>
+        <text class="text" x="310" y="45" text-anchor="middle">Bob</text>
+        <line class="arrow" x1="130" y1="40" x2="270" y2="40" marker-end="url(#arrowhead)"/>
+        <text class="text" x="200" y="35" text-anchor="middle">Hello</text>
+      </svg>`;
 
       storage.get.mockResolvedValue(null);
       fetch.mockResolvedValue({
@@ -71,7 +85,21 @@ describe('PlantUML Resolvers', () => {
   describe('refreshDiagram', () => {
     it('should clear cache and re-render', async () => {
       const source = '@startuml\nAlice -> Bob\n@enduml';
-      const mockSvg = '<svg>refreshed</svg>';
+      const mockSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+        <defs>
+          <style>
+            .actor { fill: #FEFECE; stroke: #A80036; stroke-width: 1.5; }
+            .arrow { stroke: #A80036; stroke-width: 1; fill: none; }
+            .text { font-family: sans-serif; font-size: 13px; fill: #000000; }
+          </style>
+        </defs>
+        <rect class="actor" x="50" y="20" width="80" height="40" rx="5"/>
+        <text class="text" x="90" y="45" text-anchor="middle">Refreshed Alice</text>
+        <rect class="actor" x="270" y="20" width="80" height="40" rx="5"/>
+        <text class="text" x="310" y="45" text-anchor="middle">Bob</text>
+        <line class="arrow" x1="130" y1="40" x2="270" y2="40" marker-end="url(#arrowhead)"/>
+        <text class="text" x="200" y="35" text-anchor="middle">Hi there!</text>
+      </svg>`;
 
       fetch.mockResolvedValue({
         ok: true,

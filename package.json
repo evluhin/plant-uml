@@ -42,10 +42,11 @@
   },
   "lint-staged": {
     "apps/forge-plantuml/**/*.{js,jsx,ts,tsx}": [
-      "echo '🔍 Linting Forge app JavaScript/TypeScript files...'",
+      "echo '🔍 Linting and testing Forge app...'",
       "cd apps/forge-plantuml && npx eslint --fix",
+      "cd apps/forge-plantuml && npm test",
       "prettier --write",
-      "echo '✅ Forge app linting complete!'"
+      "echo '✅ Forge app checks complete!'"
     ],
     "apps/forge-plantuml/manifest.yml": [
       "echo '🔍 Linting Forge manifest...'",

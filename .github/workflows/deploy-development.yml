@@ -1,13 +1,10 @@
 name: Deploy Development
 
 on:
-  push:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
     branches: [develop]
-    paths:
-      - 'services/renderer/**'
-      - 'apps/forge-plantuml/**'
-      - 'package*.json'
-      - '.github/workflows/**'
   workflow_dispatch: # Manual trigger
 
 env:
@@ -19,6 +16,7 @@ jobs:
   # Fast quality checks first
   quality-checks:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       aws-changed: ${{ steps.changes.outputs.aws }}
       forge-changed: ${{ steps.changes.outputs.forge }}
