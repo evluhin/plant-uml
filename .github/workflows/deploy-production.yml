@@ -46,7 +46,7 @@ jobs:
         run: |
           cd services/renderer
           sam build --cached
-          sam deploy --config-env prod --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-prod --resolve-s3
+          sam deploy --config-env prod --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-prod --resolve-s3 --capabilities CAPABILITY_IAM
 
       - name: Install Forge CLI
         run: npm install -g @forge/cli@latest
@@ -55,10 +55,11 @@ jobs:
         env:
           CI: true
           FORGE_DISABLE_ANALYTICS: true
+          FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
+          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
         run: |
           cd apps/forge-plantuml
-          echo "${{ secrets.FORGE_API_TOKEN }}" | forge login --email ${{ vars.FORGE_EMAIL }}
-          forge deploy --environment production
+          forge deploy --environment production --non-interactive
 
       - name: Production smoke test
         run: |
