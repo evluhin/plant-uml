@@ -124,6 +124,7 @@ jobs:
           FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
         run: |
           cd apps/forge-plantuml
+          npm install
           forge deploy --environment development --non-interactive
 
   # Smoke test after deployments
