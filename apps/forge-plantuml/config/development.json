@@ -1,0 +1,6 @@
+{
+  "rendererUrl": "https://q2cro7gz51.execute-api.eu-north-1.amazonaws.com/dev",
+  "environment": "development",
+  "awsRegion": "eu-north-1",
+  "jwtSecretParameter": "/plantuml/renderer/jwt-secret-dev"
+}

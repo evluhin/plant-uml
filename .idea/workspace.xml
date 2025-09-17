@@ -4,10 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Clean up">
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Fix docs">
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPMENT.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/smoke-test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/smoke-test.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QUICKSTART.md" beforeDir="false" afterPath="$PROJECT_DIR$/QUICKSTART.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/renderer/src/main/java/com/plantuml/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/src/main/java/com/plantuml/Handler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -234,7 +241,9 @@
       <workItem from="1757002905107" duration="278000" />
       <workItem from="1757064116145" duration="10974000" />
       <workItem from="1757079999263" duration="1827000" />
-      <workItem from="1757334525124" duration="8135000" />
+      <workItem from="1757334525124" duration="14804000" />
+      <workItem from="1758095630276" duration="2025000" />
+      <workItem from="1758105252665" duration="899000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />
@@ -420,7 +429,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757343287394</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Fix docs">
+      <option name="closed" value="true" />
+      <created>1757346994594</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1757346994594</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -458,17 +475,7 @@
     <MESSAGE value="Update docs" />
     <MESSAGE value="Update CI/CD" />
     <MESSAGE value="Clean up" />
-    <option name="LAST_COMMIT_MESSAGE" value="Clean up" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/apps/forge-plantuml/src/index.js</url>
-          <line>22</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Fix docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix docs" />
   </component>
 </project>

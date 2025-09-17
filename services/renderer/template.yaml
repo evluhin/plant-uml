@@ -15,7 +15,7 @@ Parameters:
 Globals:
   Function:
     Timeout: 20
-    MemorySize: 1024
+    MemorySize: 256
     Runtime: java11
     Architectures:
       - x86_64
@@ -40,6 +40,24 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
+  # JWT Authorizer Function
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub plantuml-authorizer-${Environment}
+      CodeUri: authorizer/
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      MemorySize: 128
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${JWTSecretParameter}'
+
   # Lambda Function
   RendererFunction:
     Type: AWS::Serverless::Function
@@ -55,9 +73,6 @@ Resources:
         Variables:
           GRAPHVIZ_DOT: /opt/bin/dot
           PLANTUML_JAR: /opt/plantuml.jar
-      Policies:
-        - SSMParameterReadPolicy:
-            ParameterName: !Ref JWTSecretParameter
       AutoPublishAlias: live
       Events:
         RenderApi:
@@ -66,6 +81,8 @@ Resources:
             ApiId: !Ref RendererApi
             Path: /render
             Method: post
+            Auth:
+              Authorizer: JWTAuthorizer
         HealthApi:
           Type: HttpApi
           Properties:
@@ -80,6 +97,17 @@ Resources:
     Type: AWS::Serverless::HttpApi
     Properties:
       StageName: !Ref Environment
+      Auth:
+        Authorizers:
+          JWTAuthorizer:
+            FunctionArn: !GetAtt AuthorizerFunction.Arn
+            FunctionInvokeRole: !GetAtt AuthorizerInvokeRole.Arn
+            Identity:
+              Headers:
+                - Authorization
+            AuthorizerPayloadFormatVersion: "1.0"
+            EnableSimpleResponses: false
+            AuthorizerResultTtlInSeconds: 3600
       CorsConfiguration:
         AllowOrigins:
           - "*"
@@ -91,6 +119,26 @@ Resources:
           - GET
           - OPTIONS
         MaxAge: 600
+
+  # IAM Role for API Gateway to invoke Authorizer
+  AuthorizerInvokeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeAuthorizerFunction
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt AuthorizerFunction.Arn
 
   # CloudWatch Log Group
   RendererLogGroup:
