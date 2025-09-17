@@ -16,54 +16,54 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: '11'
-      
+
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
-      
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Deploy Lambda to prod
         run: |
           cd services/renderer
-          sam build
-          sam deploy --config-env prod --no-confirm-changeset --region ${{ vars.AWS_REGION }}
-      
+          sam build --cached
+          sam deploy --config-env prod --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-prod
+
       - name: Install Forge CLI
         run: npm install -g @forge/cli@latest
-      
+
       - name: Deploy Forge app to production
         run: |
           cd apps/forge-plantuml
           echo "${{ secrets.FORGE_API_TOKEN }}" | forge login --email ${{ vars.FORGE_EMAIL }}
           forge deploy --environment production
-      
+
       - name: Production smoke test
         run: |
           # Wait for deployment
           sleep 30
           # Run smoke tests
           ./scripts/smoke-test.sh ${{ vars.RENDERER_URL_PROD }}
-      
+
       - name: Create release
         if: success()
         uses: actions/create-release@v1

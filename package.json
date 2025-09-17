@@ -8,23 +8,25 @@
     "services/renderer"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
-    "fmt": "npm run fmt --workspaces",
-    "clean": "npm run clean --workspaces && rm -rf node_modules",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "fmt": "npm run fmt --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
     "deploy": "./deploy.sh",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "precommit": "lint-staged",
+    "update-deps": "npm update && npm audit fix"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
-    "axios": "^1.11.0",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "axios": "^1.12.2",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.0.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
     "prettier": "^3.1.0"
   },
   "engines": {
@@ -33,9 +35,18 @@
   },
   "packageManager": "npm@10.0.0",
   "dependencies": {
-    "@forge/api": "^3.9.2",
-    "@forge/bridge": "^3.5.0",
-    "@forge/react": "^10.11.1",
+    "@forge/api": "^6.1.1",
+    "@forge/bridge": "^5.5.0",
+    "@forge/react": "^11.3.0",
     "jsonwebtoken": "^9.0.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
