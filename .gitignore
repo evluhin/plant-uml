@@ -104,7 +104,6 @@ pids/
 .npm/
 .eslintcache
 .yarn-integrity
-package-lock.json
 yarn.lock
 
 # Bundler cache
