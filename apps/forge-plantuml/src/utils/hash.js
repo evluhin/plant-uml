@@ -11,21 +11,21 @@ function generateAttachmentName(hash, format) {
 
 function clampDimensions(width, height) {
   const result = {};
-  
+
   if (width) {
     const w = parseInt(width, 10);
     if (!isNaN(w) && w > 0) {
       result.width = Math.min(w, 2000); // Max 2000px
     }
   }
-  
+
   if (height) {
     const h = parseInt(height, 10);
     if (!isNaN(h) && h > 0) {
       result.height = Math.min(h, 2000); // Max 2000px
     }
   }
-  
+
   return result;
 }
 

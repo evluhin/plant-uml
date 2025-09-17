@@ -41,12 +41,30 @@
     "jsonwebtoken": "^9.0.2"
   },
   "lint-staged": {
+    "apps/forge-plantuml/**/*.{js,jsx,ts,tsx}": [
+      "echo '🔍 Linting Forge app JavaScript/TypeScript files...'",
+      "cd apps/forge-plantuml && npx eslint --fix",
+      "prettier --write",
+      "echo '✅ Forge app linting complete!'"
+    ],
+    "apps/forge-plantuml/manifest.yml": [
+      "echo '🔍 Linting Forge manifest...'",
+      "cd apps/forge-plantuml && forge lint",
+      "echo '✅ Forge manifest linting complete!'"
+    ],
+    "services/renderer/**/*.java": [
+      "echo '☕ Java files changed - consider running Java formatter'"
+    ],
     "*.{js,jsx,ts,tsx}": [
+      "echo '🔍 Linting JavaScript/TypeScript files...'",
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "echo '✅ JavaScript/TypeScript linting complete!'"
     ],
     "*.{json,md,yml,yaml}": [
-      "prettier --write"
+      "echo '🎨 Formatting JSON/Markdown/YAML files...'",
+      "prettier --write",
+      "echo '✅ Formatting complete!'"
     ]
   }
 }
