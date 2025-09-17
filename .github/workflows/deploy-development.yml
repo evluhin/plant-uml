@@ -46,7 +46,7 @@ jobs:
         run: |
           cd services/renderer
           sam build
-          sam deploy --config-env dev --no-confirm-changeset --region ${{ vars.AWS_REGION }}
+          sam deploy --config-env dev --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-dev
       
       - name: Install Forge CLI
         run: npm install -g @forge/cli@latest

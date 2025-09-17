@@ -14,7 +14,7 @@ const EXPECTED_SVG_CHECKSUM = 'a1b2c3d4e5f6'; // This would be calculated from a
 const TEST_TIMEOUT = 30000; // 30 seconds
 
 // Environment variables
-const RENDERER_URL = process.env.RENDERER_URL || process.env.RENDERER_URL_STG;
+const RENDERER_URL = process.env.RENDERER_URL;
 const JWT_SECRET = process.env.RENDERER_JWT_SECRET || 'shared-renderer-secret-2024';
 const ENVIRONMENT = process.env.CI_ENVIRONMENT_NAME || 'development';
 

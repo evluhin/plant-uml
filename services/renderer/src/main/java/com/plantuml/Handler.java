@@ -35,8 +35,6 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
                 path = rawPath.substring(4);
             } else if (rawPath.startsWith("/prod/")) {
                 path = rawPath.substring(5);
-            } else if (rawPath.startsWith("/stg/")) {
-                path = rawPath.substring(4);
             }
             
             context.getLogger().log("Processed Path: " + path);
