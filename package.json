@@ -50,7 +50,7 @@
     ],
     "apps/forge-plantuml/manifest.yml": [
       "echo '🔍 Linting Forge manifest...'",
-      "cd apps/forge-plantuml && forge lint",
+      "cd apps/forge-plantuml && npx @forge/cli lint",
       "echo '✅ Forge manifest linting complete!'"
     ],
     "services/renderer/**/*.java": [
