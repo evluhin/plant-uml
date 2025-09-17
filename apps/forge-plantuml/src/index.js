@@ -1,3 +1,4 @@
+// PlantUML Confluence App - Main Handler
 const api = require('@forge/api');
 const jwt = require('jsonwebtoken');
 const { storage } = require('@forge/api');
