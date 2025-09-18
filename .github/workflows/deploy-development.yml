@@ -1,13 +1,11 @@
 name: Deploy Development
 
 on:
-  push:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
     branches: [develop]
-    paths:
-      - 'services/renderer/**'
-      - 'apps/forge-plantuml/**'
-      - 'package*.json'
-      - '.github/workflows/**'
   workflow_dispatch: # Manual trigger
 
 env:
@@ -16,9 +14,10 @@ env:
   SAM_CLI_TELEMETRY: 0
 
 jobs:
-  # Fast quality checks first
-  quality-checks:
+  # Check if CI passed and determine what to deploy
+  check-and-prepare:
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
     outputs:
       aws-changed: ${{ steps.changes.outputs.aws }}
       forge-changed: ${{ steps.changes.outputs.forge }}
@@ -36,7 +35,7 @@ jobs:
             echo "aws=true" >> $GITHUB_OUTPUT
             echo "forge=true" >> $GITHUB_OUTPUT
           else
-            # For push triggers, check what changed
+            # For workflow_run triggers, check what changed
             if git diff --name-only HEAD~1 HEAD | grep -E '^services/renderer/'; then
               echo "aws=true" >> $GITHUB_OUTPUT
             else
@@ -50,26 +49,11 @@ jobs:
             fi
           fi
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
-
-      - name: Run linting
-        run: npm run lint
-
-      - name: Run tests
-        run: npm run test
-
   # Deploy AWS Lambda only if renderer changed
   deploy-aws:
     runs-on: ubuntu-latest
-    needs: quality-checks
-    if: needs.quality-checks.outputs.aws-changed == 'true'
+    needs: check-and-prepare
+    if: needs.check-and-prepare.outputs.aws-changed == 'true'
     environment: development
     steps:
       - uses: actions/checkout@v4
@@ -101,8 +85,8 @@ jobs:
   # Deploy Forge only if app changed
   deploy-forge:
     runs-on: ubuntu-latest
-    needs: quality-checks
-    if: needs.quality-checks.outputs.forge-changed == 'true'
+    needs: check-and-prepare
+    if: needs.check-and-prepare.outputs.forge-changed == 'true'
     environment: development
     steps:
       - uses: actions/checkout@v4
@@ -127,11 +111,11 @@ jobs:
           npm ci --ignore-scripts
           forge deploy --environment development --non-interactive
 
-  # Smoke test after deployments
+  # Smoke test only after successful deployments
   smoke-test:
     runs-on: ubuntu-latest
-    needs: [quality-checks, deploy-aws, deploy-forge]
-    if: always() && (needs.deploy-aws.result == 'success' || needs.deploy-forge.result == 'success' || (needs.deploy-aws.result == 'skipped' && needs.deploy-forge.result == 'skipped'))
+    needs: [check-and-prepare, deploy-aws, deploy-forge]
+    if: always() && (needs.deploy-aws.result == 'success' || needs.deploy-forge.result == 'success')
     steps:
       - uses: actions/checkout@v4
 
