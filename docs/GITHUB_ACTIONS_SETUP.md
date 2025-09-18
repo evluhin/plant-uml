@@ -5,7 +5,7 @@
 The project uses GitHub Actions for continuous integration and deployment with three main workflows:
 
 1. **CI** (`ci.yml`) - Runs on every push/PR
-2. **Deploy to Staging** (`deploy-staging.yml`) - Auto-deploys after successful CI
+2. **Deploy Development** (`deploy-development.yml`) - Auto-deploys to development environment
 3. **Deploy to Production** (`deploy-production.yml`) - Manual deployment with confirmation
 
 ## Required Secrets
@@ -22,7 +22,6 @@ AWS_SECRET_ACCESS_KEY=...
 ```
 FORGE_EMAIL=your-email@example.com
 FORGE_API_TOKEN=ATATT3xFfGF0...
-FORGE_ENV_STG=staging
 FORGE_ENV_PROD=production
 ```
 
@@ -42,12 +41,10 @@ RENDERER_JWT_SECRET=your-base64-jwt-secret
 - `test-e2e` - Playwright end-to-end tests
 - `build` - Build both Forge app and SAM application
 
-### Staging Deployment
-**Triggers**: After successful CI on `main`/`develop`
+### Development Deployment
+**Triggers**: Push to `develop` branch
 **Jobs**:
-- `deploy-renderer` - Deploy AWS Lambda renderer to staging
-- `deploy-forge` - Deploy Forge app to staging environment
-- `test-staging` - Run integration tests against staging
+- `deploy-dev` - Deploy AWS Lambda renderer and Forge app to development environment
 
 ### Production Deployment
 **Triggers**: Manual workflow dispatch only
@@ -80,10 +77,10 @@ Production deployments use GitHub Environment protection rules:
 ## Usage
 
 ### Automatic Deployments
-1. Push to `main` or `develop` branch
+1. Push to `develop` branch
 2. CI workflow runs automatically
-3. On success, staging deployment triggers
-4. Staging environment updated automatically
+3. On success, development deployment triggers
+4. Development environment updated automatically
 
 ### Production Deployments
 1. Go to Actions tab in GitHub

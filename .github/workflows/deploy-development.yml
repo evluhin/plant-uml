@@ -7,54 +7,136 @@ on:
       - 'services/renderer/**'
       - 'apps/forge-plantuml/**'
       - 'package*.json'
+      - '.github/workflows/**'
+  workflow_dispatch: # Manual trigger
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '11'
+  SAM_CLI_TELEMETRY: 0
 
 jobs:
-  deploy-dev:
+  # Fast quality checks first
+  quality-checks:
     runs-on: ubuntu-latest
-    environment: development
+    outputs:
+      aws-changed: ${{ steps.changes.outputs.aws }}
+      forge-changed: ${{ steps.changes.outputs.forge }}
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: changes
+        run: |
+          # For manual triggers, deploy everything
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual trigger - deploying all components"
+            echo "aws=true" >> $GITHUB_OUTPUT
+            echo "forge=true" >> $GITHUB_OUTPUT
+          else
+            # For push triggers, check what changed
+            if git diff --name-only HEAD~1 HEAD | grep -E '^services/renderer/'; then
+              echo "aws=true" >> $GITHUB_OUTPUT
+            else
+              echo "aws=false" >> $GITHUB_OUTPUT
+            fi
+
+            if git diff --name-only HEAD~1 HEAD | grep -E '^apps/forge-plantuml/'; then
+              echo "forge=true" >> $GITHUB_OUTPUT
+            else
+              echo "forge=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+  # Deploy AWS Lambda only if renderer changed
+  deploy-aws:
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: needs.quality-checks.outputs.aws-changed == 'true'
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '11'
-      
+          java-version: ${{ env.JAVA_VERSION }}
+
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
-      
+        with:
+          use-installer: true
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-      
-      - name: Install dependencies
-        run: npm ci
-      
+
       - name: Deploy Lambda to dev
         run: |
           cd services/renderer
-          sam build
-          sam deploy --config-env dev --no-confirm-changeset
-      
+          sam build --cached
+          sam deploy --config-env dev --no-confirm-changeset --region ${{ vars.AWS_REGION }} --stack-name plantuml-renderer-dev --resolve-s3 --capabilities CAPABILITY_IAM
+
+  # Deploy Forge only if app changed
+  deploy-forge:
+    runs-on: ubuntu-latest
+    needs: quality-checks
+    if: needs.quality-checks.outputs.forge-changed == 'true'
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Forge CLI
+        run: npm install -g @forge/cli@latest
+
       - name: Deploy Forge app to development
+        env:
+          CI: true
+          FORGE_DISABLE_ANALYTICS: true
+          FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
+          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
         run: |
           cd apps/forge-plantuml
-          echo "${{ secrets.FORGE_API_TOKEN }}" | npx @forge/cli login --email ${{ vars.FORGE_EMAIL }}
-          npx @forge/cli deploy --environment development
-      
-      - name: Smoke test
-        run: |
-          # Wait for deployment
-          sleep 30
-          # Run smoke tests
-          ./scripts/smoke-test.sh ${{ vars.RENDERER_URL_DEV }}
+          npm ci --ignore-scripts
+          forge deploy --environment development --non-interactive
+
+  # Smoke test after deployments
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: [quality-checks, deploy-aws, deploy-forge]
+    if: always() && (needs.deploy-aws.result == 'success' || needs.deploy-forge.result == 'success' || (needs.deploy-aws.result == 'skipped' && needs.deploy-forge.result == 'skipped'))
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Run smoke tests
+        run: ./scripts/smoke-test.sh ${{ vars.RENDERER_URL_DEV }}

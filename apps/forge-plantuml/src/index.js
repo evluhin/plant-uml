@@ -1,3 +1,5 @@
+// PlantUML Confluence App - Main Handler
+// Final CI/CD deployment test - both AWS and Forge!
 const api = require('@forge/api');
 const jwt = require('jsonwebtoken');
 const { storage } = require('@forge/api');

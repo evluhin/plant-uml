@@ -6,7 +6,7 @@ Parameters:
   Environment:
     Type: String
     Default: dev
-    AllowedValues: [dev, stg, prod]
+    AllowedValues: [dev, prod]
   JWTSecretParameter:
     Type: String
     Default: /plantuml/renderer/jwt-secret
