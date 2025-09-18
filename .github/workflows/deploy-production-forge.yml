@@ -1,0 +1,52 @@
+name: Deploy Production Forge
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  deploy-forge-prod:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Install Forge CLI
+        run: npm install -g @forge/cli@latest
+
+      - name: Deploy Forge app to production
+        env:
+          CI: true
+          FORGE_DISABLE_ANALYTICS: true
+          FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
+          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
+        run: |
+          cd apps/forge-plantuml
+          npm ci --ignore-scripts
+          forge deploy --environment production --non-interactive --no-verify
+
+      - name: Create Forge release tag
+        if: success()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          TAG_NAME="forge-prod-$(date +'%Y%m%d-%H%M%S')"
+          git tag -a "$TAG_NAME" -m "Forge production deployment $TAG_NAME"
+          git push origin "$TAG_NAME"

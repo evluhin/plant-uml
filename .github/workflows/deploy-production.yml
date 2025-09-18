@@ -1,4 +1,4 @@
-name: Deploy Production
+name: Deploy Production AWS
 
 on:
   workflow_dispatch: # Manual trigger only for now
@@ -20,8 +20,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -61,20 +70,6 @@ jobs:
           else
             echo "✅ Deployment successful"
           fi
-
-      - name: Install Forge CLI
-        run: npm install -g @forge/cli@latest
-
-      - name: Deploy Forge app to production
-        env:
-          CI: true
-          FORGE_DISABLE_ANALYTICS: true
-          FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
-          FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
-        run: |
-          cd apps/forge-plantuml
-          npm ci --ignore-scripts
-          forge deploy --environment production --non-interactive --no-verify
 
       - name: Production smoke test
         run: |
