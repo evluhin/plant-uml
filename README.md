@@ -1,10 +1,18 @@
 # PlantUML Confluence Cloud App
 
-A production-ready Atlassian Forge app that enables PlantUML diagram editing and rendering in Confluence Cloud, with Java 11 AWS Lambda rendering service, Node.js Lambda Authorizer, and SnapStart optimization.
+A production-ready Atlassian Forge app that enables PlantUML diagram editing and rendering in Confluence Cloud, with optimized AWS Lambda backend and automated CI/CD pipeline.
 
 ## 🚀 Quick Start
 
-**New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for 5-minute setup.
+**New to the project?** Use our automated setup:
+
+```bash
+git clone <repository-url>
+cd plant-uml-confluence
+./scripts/setup.sh
+```
+
+**Manual setup?** See [SETUP.md](./SETUP.md) for detailed instructions.
 
 ## 🏗️ Architecture
 
@@ -18,101 +26,104 @@ A production-ready Atlassian Forge app that enables PlantUML diagram editing and
                               ▼                         ▼
                        ┌──────────────┐         ┌──────────────┐
                        │ Forge Storage│         │ API Gateway  │
-                       │ (1GB/client) │         │ + Authorizer │
+                       │ (Diagram     │         │ + JWT Auth   │
+                       │  Cache)      │         │ (1hr cache)  │
                        └──────────────┘         └──────────────┘
-                                                         │
-                                                         ▼
-                                                ┌──────────────┐
-                                                │   Node.js    │
-                                                │ JWT Auth     │
-                                                │ (~100ms)     │
-                                                └──────────────┘
 ```
 
-### Components
-- **Forge App**: React UI macro with cache reset and configuration options
-- **Java Renderer**: AWS Lambda with SnapStart (~5s cold start, 256MB memory)
-- **Node.js Authorizer**: JWT validation with 1-hour caching (~100ms cold start)
-- **Security**: JWT HS256 tokens (60s TTL), API Gateway auth caching
-- **Storage**: Hash-based SVG caching in Forge storage (1GB per client)
+### Key Components
 
-## 📚 Documentation
+- **Forge App**: React UI with cache management and configuration
+- **AWS Lambda**: Java renderer (256MB, ~5s cold start with SnapStart)
+- **Node.js Authorizer**: JWT validation with 1-hour API Gateway caching
+- **Security**: JWT HS256 tokens (60s TTL), environment-specific secrets
+- **Storage**: Hash-based SVG/PNG caching in Forge storage
 
-| Document | Purpose |
-|----------|---------|
-| [QUICKSTART.md](./QUICKSTART.md) | 5-minute setup guide for new users |
-| [DEVELOPMENT.md](./DEVELOPMENT.md) | Complete development guide, testing, troubleshooting |
-| [SECURITY.md](./SECURITY.md) | Security architecture & threat model |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Development workflow & coding standards |
-| [MARKETPLACE.md](./MARKETPLACE.md) | Atlassian Marketplace publishing guide |
-| [services/renderer/README.md](./services/renderer/README.md) | Lambda renderer service documentation |
-| [docs/GITHUB_SETUP.md](./docs/GITHUB_SETUP.md) | GitHub Actions CI/CD setup |
+## 📊 Performance & Cost
 
-## 🔧 Key Features
+| Metric            | Development                    | Production                 |
+| ----------------- | ------------------------------ | -------------------------- |
+| **Cold Start**    | ~5s (Java) + ~100ms (Auth)     | ~5s (Java) + ~0ms (cached) |
+| **Warm Requests** | ~1-2s rendering                | ~1-2s rendering            |
+| **Auth Overhead** | ~100ms                         | ~0ms (1hr cache)           |
+| **Expected Cost** | ~$2-5/month                    | ~$5-15/month               |
+| **Memory Usage**  | 140MB actual / 256MB allocated | Optimized for cost         |
 
-- **Cache Reset**: Users can reset broken diagrams via macro configuration
-- **SnapStart**: Java Lambda cold start optimization (8s → 5s)
-- **Fast Auth**: Node.js authorizer with API Gateway caching (1 hour TTL)
-- **SVG Output**: Clean, scalable diagram rendering with PlantUML
-- **JWT Security**: Short-lived tokens with environment-specific secrets
-- **Auto-scaling**: Serverless architecture with 1GB storage per Confluence instance
-- **CI/CD**: GitHub Actions with automated dev deployment and manual prod deployment
+## 🔧 Development Environments
+
+| Environment     | Purpose         | Auto-Deploy          | Stack Name               |
+| --------------- | --------------- | -------------------- | ------------------------ |
+| **Development** | Feature testing | ✅ On `develop` push | `plantuml-renderer-dev`  |
+| **Production**  | Live users      | 🔒 Manual trigger    | `plantuml-renderer-prod` |
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React with Forge UI Kit components
+- **Frontend**: React with Forge UI Kit
 - **Backend**: Atlassian Forge resolvers (Node.js)
-- **Renderer**: Java 11 AWS Lambda with PlantUML library
-- **Authentication**: Node.js Lambda Authorizer with JWT validation
+- **Renderer**: Java 11 AWS Lambda with PlantUML + Graphviz
+- **Authentication**: Node.js Lambda Authorizer with JWT
 - **Infrastructure**: AWS SAM, API Gateway, CloudFormation
-- **CI/CD**: GitHub Actions, automated testing and deployment
+- **CI/CD**: GitHub Actions with cost-optimized workflows
 - **Security**: JWT HS256, AWS SSM Parameter Store, CORS
 
-## 🚀 Deployment Environments
+## 📚 Documentation
 
-| Environment | Purpose | Auto-Deploy | Stack Name |
-|-------------|---------|-------------|------------|
-| **Development** | Feature testing | ✅ On `develop` branch | `plantuml-renderer-dev` |
-| **Production** | Live users | 🔒 Manual approval | `plantuml-renderer-prod` |
+| Document                             | Purpose                                    |
+| ------------------------------------ | ------------------------------------------ |
+| [SETUP.md](./SETUP.md)               | Complete setup guide (local, dev, prod)    |
+| [DEVELOPMENT.md](./DEVELOPMENT.md)   | Development workflow and troubleshooting   |
+| [SECURITY.md](./SECURITY.md)         | Security architecture & threat model       |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Development standards & contribution guide |
 
-## 📊 Performance
+## 🚀 Quick Commands
 
-- **Cold Start**: ~5s (Java renderer) + ~100ms (Node.js auth)
-- **Warm Requests**: ~1-2s (rendering) + ~0ms (cached auth)
-- **Memory Usage**: 140MB actual / 256MB allocated (cost-optimized)
-- **Caching**: 1-hour auth cache, hash-based diagram cache
-- **Scalability**: Serverless auto-scaling, 1GB storage per client
+```bash
+# Setup everything (automated)
+./scripts/setup.sh
+
+# Local development
+./scripts/dev.sh
+
+# Deploy to development
+./scripts/deploy-dev.sh
+
+# Deploy to production (manual)
+./scripts/deploy-prod.sh
+
+# Run tests
+npm test
+
+# Health check
+./scripts/health-check.sh
+```
 
 ## 🔐 Security Features
 
-- **JWT Authentication**: HS256 tokens with 60-second TTL
-- **Environment Isolation**: Separate secrets for dev/prod environments
-- **API Gateway**: CORS restrictions and rate limiting
-- **Secret Management**: AWS SSM Parameter Store with encryption
-- **Development Mode**: JWT bypass for local testing
-
-## 💰 Cost Optimization
-
-- **Memory**: Right-sized to 256MB (vs 1024MB default)
-- **Auth Caching**: 1-hour TTL reduces Lambda invocations by 99%
-- **SnapStart**: Reduces cold start time and cost
-- **Pay-per-use**: No fixed costs, scales to zero
-- **Expected Cost**: ~$2-10/month with CI/CD
+- **JWT Authentication**: HS256 with 60s TTL
+- **Environment Isolation**: Separate secrets for dev/prod
+- **Input Validation**: Size limits, format validation
+- **Output Sanitization**: SVG script removal
+- **Rate Limiting**: API Gateway throttling
+- **Audit Logging**: CloudWatch monitoring (no source code logged)
 
 ## 🧪 Testing
 
-- **Unit Tests**: Java JUnit tests for renderer logic
-- **Integration Tests**: End-to-end API testing with SAM local
-- **Smoke Tests**: Health endpoint validation in CI/CD
-- **Local Development**: Docker-free testing with SAM CLI
+- **Unit Tests**: Jest for Forge app logic
+- **Integration Tests**: SAM local API testing
+- **Smoke Tests**: Health endpoint validation
+- **Security Tests**: JWT validation, input sanitization
+- **Performance Tests**: Cold start and rendering benchmarks
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
-- Development workflow and branch strategy
-- Code standards and linting rules
-- Testing requirements
-- Pull request process
+1. **Fork** the repository
+2. **Create** feature branch from `develop`
+3. **Make** changes and test locally
+4. **Submit** PR to `develop` (auto-deploys to dev environment)
+5. **Test** in development environment
+6. **Create** PR to `master` for production (manual approval)
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
 ## 📝 License
 

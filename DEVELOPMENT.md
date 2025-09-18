@@ -4,11 +4,12 @@ Complete guide for developing, testing, and deploying the PlantUML Confluence ap
 
 ## 🚀 Quick Setup
 
-**New to the project?** Start with [QUICKSTART.md](./QUICKSTART.md), then return here for development.
+**New to the project?** Start with [SETUP.md](./SETUP.md), then return here for development.
 
 ## 🏗️ Development Environment
 
 ### Prerequisites
+
 - **Java 11+** (for renderer development)
 - **Node.js 18+** and npm 8+
 - **AWS CLI** configured with appropriate permissions
@@ -17,15 +18,13 @@ Complete guide for developing, testing, and deploying the PlantUML Confluence ap
 - **Forge CLI**: `npm install -g @forge/cli`
 
 ### Environment Setup
-```bash
-# Clone and install
-git clone <repository-url>
-cd plant-uml-confluence
-npm install
 
-# Install dependencies in all workspaces
-cd services/renderer && npm install
-cd ../../apps/forge-plantuml && npm install
+```bash
+# Automated setup (recommended)
+./scripts/setup.sh
+
+# Or manual setup
+npm install
 ```
 
 ## 🏗️ Architecture Overview
@@ -81,48 +80,48 @@ plant-uml-confluence/
 
 ## 🧪 Local Development
 
-### 1. Renderer Service Development
+### 1. Local Development
 
 ```bash
-cd services/renderer
+# Start local renderer (keeps running)
+./scripts/dev.sh
 
-# Build and test locally
-sam build
-sam local start-api --port 3001
+# In another terminal, start Forge tunnel
+cd apps/forge-plantuml
+forge tunnel
 
-# In another terminal, test endpoints
+# Test endpoints
 curl http://localhost:3001/health
-curl -X POST http://localhost:3001/render \
-  -H "Content-Type: application/json" \
-  -d '{"source":"@startuml\nAlice -> Bob: Hello\n@enduml","format":"svg"}'
+./scripts/health-check.sh
 ```
 
 **Note**: In local development (`NODE_ENV=development`), JWT authentication is bypassed.
 
-### 2. Forge App Development
+### 2. Quick Deployment
 
 ```bash
-cd apps/forge-plantuml
+# Deploy to development
+./scripts/deploy-dev.sh
 
-# Set development environment variables
-npx @forge/cli variables set RENDERER_URL "http://localhost:3001" --environment development
-npx @forge/cli variables set RENDERER_JWT_SECRET "dev-secret" --environment development
+# Deploy to production (with confirmation)
+./scripts/deploy-prod.sh
 
-# Deploy and tunnel for live development
-npx @forge/cli deploy --environment development
-npx @forge/cli tunnel
+# Health check all environments
+./scripts/health-check.sh
 ```
 
-### 3. Automated Testing
+### 3. Testing
 
 ```bash
-# Run renderer tests
-cd services/renderer
-bash test-loop.sh
-
-# Run Forge app tests (if available)
-cd apps/forge-plantuml
+# Run all tests
 npm test
+
+# Run smoke tests
+./scripts/health-check.sh
+
+# Run integration tests
+cd services/renderer
+./test-loop.sh
 ```
 
 ## 🔧 Configuration
@@ -130,12 +129,14 @@ npm test
 ### Environment Variables
 
 #### Renderer Lambda Environment Variables
+
 - `NODE_ENV`: Set to "development" to skip JWT validation
 - `JWT_SECRET_PARAM`: SSM parameter path for JWT secret
 - `GRAPHVIZ_DOT`: Path to Graphviz binary (`/opt/bin/dot`)
 - `PLANTUML_JAR`: Path to PlantUML JAR (`/opt/plantuml.jar`)
 
 #### Forge App Environment Variables
+
 - `RENDERER_URL`: API Gateway endpoint URL
 - `RENDERER_JWT_SECRET`: Shared JWT secret for token generation
 
@@ -144,6 +145,7 @@ npm test
 **Critical**: Each environment must have matching secrets between AWS SSM and Forge.
 
 #### 1. Create AWS SSM Parameters
+
 ```bash
 # Development secret
 aws ssm put-parameter \
@@ -161,6 +163,7 @@ aws ssm put-parameter \
 ```
 
 #### 2. Configure Forge Environment Variables
+
 ```bash
 # Get the actual secret values
 DEV_SECRET=$(aws ssm get-parameter \
@@ -191,7 +194,7 @@ cd apps/forge-plantuml
 npx @forge/cli variables set RENDERER_JWT_SECRET "$DEV_SECRET" --environment development
 npx @forge/cli variables set RENDERER_URL "$DEV_URL" --environment development
 
-# Production environment  
+# Production environment
 npx @forge/cli variables set RENDERER_JWT_SECRET "$PROD_SECRET" --environment production
 npx @forge/cli variables set RENDERER_URL "$PROD_URL" --environment production
 
@@ -203,6 +206,7 @@ npx @forge/cli deploy --environment production
 ### Cache Reset Feature
 
 Users can reset diagram cache through the macro configuration:
+
 - **Checkbox**: "Reset cache"
 - **Help text**: "Check this only if the diagram appears broken or outdated"
 - **Backend**: Handles `resetCache` flag to clear Forge storage
@@ -214,6 +218,7 @@ Users can reset diagram cache through the macro configuration:
 Development deploys automatically on push to `develop` branch via GitHub Actions.
 
 **Manual development deployment:**
+
 ```bash
 # Deploy renderer
 cd services/renderer
@@ -230,6 +235,7 @@ npx @forge/cli deploy --environment development
 Production requires manual approval via GitHub Actions or manual deployment.
 
 **Manual production deployment:**
+
 ```bash
 # Deploy renderer to production
 cd services/renderer
@@ -243,16 +249,17 @@ npx @forge/cli install --product confluence --environment production
 
 ### Deployment Environments
 
-| Environment | Stack Name | Auto-Deploy | Purpose |
-|-------------|------------|-------------|---------|
-| **Development** | `plantuml-renderer-dev` | ✅ On `develop` branch | Feature testing |
-| **Production** | `plantuml-renderer-prod` | 🔒 Manual approval | Live users |
+| Environment     | Stack Name               | Auto-Deploy            | Purpose         |
+| --------------- | ------------------------ | ---------------------- | --------------- |
+| **Development** | `plantuml-renderer-dev`  | ✅ On `develop` branch | Feature testing |
+| **Production**  | `plantuml-renderer-prod` | 🔒 Manual approval     | Live users      |
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
 #### "Export already exists" CloudFormation Error
+
 ```bash
 # Check existing stacks
 aws cloudformation list-stacks \
@@ -266,9 +273,11 @@ aws cloudformation delete-stack --stack-name plantuml-renderer
 ```
 
 #### "Cold start too slow (>8s)"
+
 Current performance: ~5s cold start with 256MB memory allocation.
 
 **Troubleshooting steps:**
+
 ```bash
 # Check SnapStart status
 aws lambda get-function --function-name plantuml-renderer-prod \
@@ -285,10 +294,12 @@ aws logs filter-log-events \
 ```
 
 **Expected behavior:**
+
 - First invocation: `INIT_START` (cold start ~8s)
 - Subsequent invocations: `RESTORE_START` (SnapStart ~5s)
 
 **If SnapStart OptimizationStatus is "Off":**
+
 ```bash
 # Publish new version
 aws lambda publish-version --function-name plantuml-renderer-prod
@@ -309,10 +320,13 @@ sam deploy --config-env prod
 ```
 
 #### "JWT verification failed"
+
 **Local development:**
+
 - Ensure `NODE_ENV=development` is set (JWT validation skipped)
 
 **Production:**
+
 1. Check JWT secret exists in SSM:
    ```bash
    aws ssm get-parameter --name "/plantuml/renderer/jwt-secret-prod"
@@ -324,11 +338,13 @@ sam deploy --config-env prod
 3. Ensure both secrets match exactly
 
 #### "PlantUML rendering failed"
+
 - Check PlantUML layer deployment in CloudFormation
 - Verify Java 11 runtime configuration
 - Check CloudWatch logs for detailed error messages
 
 #### "SAM deploy failed - S3 bucket not specified"
+
 - Use `sam deploy --config-env prod` (not `--guided`)
 - Check `samconfig.toml` has correct configuration
 - Remove any incorrectly created config files
@@ -423,6 +439,7 @@ Request → API Gateway → Node.js Auth (100ms) → Java Renderer (5s)
 - **Conventional Commits** for commit messages
 
 ### Branch Strategy
+
 ```
 feature/* → develop (auto-deploy dev) → main (manual deploy prod)
 ```
@@ -492,6 +509,7 @@ npx @forge/cli deploy --environment development
 ```
 
 **Benefits of separate secrets:**
+
 - Production compromise doesn't affect development
 - Can rotate environments independently
 - Better security isolation
