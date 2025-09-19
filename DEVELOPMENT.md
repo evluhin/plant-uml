@@ -11,7 +11,7 @@ Complete guide for developing, testing, and deploying the PlantUML Confluence ap
 ### Prerequisites
 
 - **Java 11+** (for renderer development)
-- **Node.js 18+** and npm 8+
+- **Node.js 20+** and npm 8+
 - **AWS CLI** configured with appropriate permissions
 - **AWS SAM CLI** installed and working
 - **Docker** (for SAM local testing)

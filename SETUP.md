@@ -29,7 +29,7 @@ This script will:
 ### Required Tools
 
 - **Java 11+** (for renderer development)
-- **Node.js 18+** and npm 8+
+- **Node.js 20+** and npm 8+
 - **AWS CLI** configured with credentials
 - **AWS SAM CLI** installed
 - **Forge CLI**: `npm install -g @forge/cli`
@@ -45,7 +45,7 @@ This script will:
 ```bash
 # Check versions
 java -version        # Should be 11+
-node --version       # Should be 18+
+node --version       # Should be 20+
 aws --version        # Should be 2.0+
 sam --version        # Should be 1.0+
 forge --version      # Should be latest

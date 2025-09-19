@@ -5,12 +5,14 @@ AWS Lambda service with Java 11 renderer and Node.js JWT authorizer that renders
 ## Architecture
 
 ### Components
+
 - **Java Renderer**: PlantUML processing (256MB, ~5s cold start)
 - **Node.js Authorizer**: JWT validation (128MB, ~100ms cold start)
 - **API Gateway**: HTTP API with 1-hour auth caching
 - **Lambda Layer**: PlantUML JAR and Graphviz binaries
 
 ### Performance
+
 - **Cold Start**: ~5s (Java) + ~100ms (Node.js auth)
 - **Warm Requests**: ~1-2s (rendering) + ~0ms (cached auth)
 - **Memory Usage**: 140MB actual / 256MB allocated
@@ -19,9 +21,10 @@ AWS Lambda service with Java 11 renderer and Node.js JWT authorizer that renders
 ## Local Development
 
 ### Prerequisites
+
 - Java 11+
 - Maven 3.6+
-- Node.js 18+
+- Node.js 20+
 - AWS SAM CLI
 - Docker (for SAM local)
 
@@ -51,7 +54,7 @@ sam build
 # Deploy to development
 sam deploy --config-env dev
 
-# Deploy to production  
+# Deploy to production
 sam deploy --config-env prod
 ```
 
@@ -62,6 +65,7 @@ sam deploy --config-env prod
 **Authentication**: JWT Bearer token (API Gateway Lambda Authorizer)
 
 **Request:**
+
 ```json
 {
   "source": "@startuml\nAlice -> Bob: Hello\n@enduml",
@@ -70,6 +74,7 @@ sam deploy --config-env prod
 ```
 
 **Response:**
+
 ```xml
 <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
   <!-- PlantUML generated SVG -->
@@ -77,6 +82,7 @@ sam deploy --config-env prod
 ```
 
 **Error Responses:**
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `400 Bad Request`: Invalid request body or missing source
 - `500 Internal Server Error`: PlantUML rendering failed
@@ -84,6 +90,7 @@ sam deploy --config-env prod
 ### GET /health (Public)
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -96,24 +103,27 @@ sam deploy --config-env prod
 ### Environment Variables
 
 #### Java Renderer Lambda
+
 - `NODE_ENV`: Set to "development" to skip JWT validation in authorizer
 - `GRAPHVIZ_DOT`: Path to Graphviz binary (`/opt/bin/dot`)
 - `PLANTUML_JAR`: Path to PlantUML JAR (`/opt/plantuml.jar`)
 
 #### Node.js Authorizer Lambda
+
 - `NODE_ENV`: Set to "development" to skip JWT validation
 - `JWT_SECRET_PARAM`: SSM parameter path for JWT secret
 
 ### Deployment Environments
 
-| Environment | Stack Name | JWT Secret Parameter |
-|-------------|------------|---------------------|
-| Development | `plantuml-renderer-dev` | `/plantuml/renderer/jwt-secret-dev` |
-| Production | `plantuml-renderer-prod` | `/plantuml/renderer/jwt-secret-prod` |
+| Environment | Stack Name               | JWT Secret Parameter                 |
+| ----------- | ------------------------ | ------------------------------------ |
+| Development | `plantuml-renderer-dev`  | `/plantuml/renderer/jwt-secret-dev`  |
+| Production  | `plantuml-renderer-prod` | `/plantuml/renderer/jwt-secret-prod` |
 
 ## Security
 
 ### JWT Authentication
+
 - **Algorithm**: HS256
 - **TTL**: 60 seconds
 - **Issuer**: `plantuml-confluence`
@@ -121,12 +131,14 @@ sam deploy --config-env prod
 - **Development Mode**: Authentication bypassed when `NODE_ENV=development`
 
 ### CORS Configuration
+
 - **Allowed Origins**: `*` (configure for production use)
 - **Allowed Headers**: `Content-Type`, `Authorization`
 - **Allowed Methods**: `GET`, `POST`, `OPTIONS`
 - **Max Age**: 600 seconds
 
 ### SnapStart Optimization
+
 - **Feature**: Enabled for Java renderer Lambda
 - **Benefit**: Reduces cold start from ~8s to ~5s
 - **Requirement**: Function alias (`live`) must be used
@@ -137,6 +149,7 @@ sam deploy --config-env prod
 ### Common Issues
 
 **"Export already exists" during deployment:**
+
 ```bash
 # Check for conflicting stacks
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE
@@ -145,11 +158,13 @@ aws cloudformation delete-stack --stack-name plantuml-renderer
 ```
 
 **JWT authentication failing:**
+
 - Verify JWT secret exists in SSM Parameter Store
 - Check authorizer Lambda logs in CloudWatch
 - Ensure `NODE_ENV=development` for local testing
 
 **SnapStart not working (cold starts >8s):**
+
 ```bash
 # Check SnapStart status
 aws lambda get-function --function-name plantuml-renderer-prod \
@@ -160,6 +175,7 @@ aws lambda get-alias --function-name plantuml-renderer-prod --name live
 ```
 
 **PlantUML rendering errors:**
+
 - Check CloudWatch logs for Java exceptions
 - Verify PlantUML layer is properly attached
 - Test with simple diagram first
@@ -183,12 +199,14 @@ aws cloudformation describe-stacks --stack-name plantuml-renderer-dev
 ## Performance Optimization
 
 ### Current Optimizations
+
 - **Memory**: Right-sized to 256MB (Java) and 128MB (Node.js)
 - **SnapStart**: Enabled for Java Lambda
 - **Auth Caching**: 1-hour TTL at API Gateway
 - **Layer**: PlantUML JAR loaded once per container
 
 ### Future Optimizations
+
 - **Provisioned Concurrency**: For guaranteed warm starts
 - **Container Images**: Better cold start optimization
 - **Memory Tuning**: Increase if cold starts become critical
