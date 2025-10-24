@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Fix docs">
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DEVELOPMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEVELOPMENT.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QUICKSTART.md" beforeDir="false" afterPath="$PROJECT_DIR$/QUICKSTART.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/forge-plantuml/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/src/main/java/com/plantuml/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/src/main/java/com/plantuml/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/renderer/template.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/services/renderer/template.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="66db8f28-4856-4186-95da-b633eea95562" name="Changes" comment="Fix docs" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,32 +33,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Jest.Render Handler Integration.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.forge-plantuml &gt; tunnel -d --verbose.executor&quot;: &quot;Debug&quot;,
-    &quot;npm.install -g @forge/cli.executor&quot;: &quot;Run&quot;,
-    &quot;npm.renderer &gt; local.executor&quot;: &quot;Debug&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/prettier&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Jest.Render Handler Integration.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "develop",
+    "last_opened_file_path": "/Users/fraer/dev/cik/code/plant-uml-confluence",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs.jest.jest_package": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/jest",
+    "nodejs_package_manager_path": "npm",
+    "npm.forge-plantuml > tunnel -d --verbose.executor": "Debug",
+    "npm.install -g @forge/cli.executor": "Run",
+    "npm.renderer > local.executor": "Debug",
+    "prettierjs.PrettierConfiguration.Package": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/prettier",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Users/fraer/dev/cik/code/plant-uml-confluence/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -244,6 +232,7 @@
       <workItem from="1757334525124" duration="14804000" />
       <workItem from="1758095630276" duration="2025000" />
       <workItem from="1758105252665" duration="899000" />
+      <workItem from="1758718696995" duration="15000" />
     </task>
     <task id="LOCAL-00001" summary="Add git ignore">
       <option name="closed" value="true" />

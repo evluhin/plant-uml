@@ -60,8 +60,8 @@ cd plant-uml-confluence
 
 - **Frontend**: React with Forge UI Kit
 - **Backend**: Atlassian Forge resolvers (Node.js)
-- **Renderer**: Java 11 AWS Lambda with PlantUML + Graphviz
-- **Authentication**: Node.js Lambda Authorizer with JWT
+- **Renderer**: Java 21 AWS Lambda with PlantUML + Graphviz
+- **Authentication**: Node.js 20 Lambda Authorizer with JWT
 - **Infrastructure**: AWS SAM, API Gateway, CloudFormation
 - **CI/CD**: GitHub Actions with cost-optimized workflows
 - **Security**: JWT HS256, AWS SSM Parameter Store, CORS

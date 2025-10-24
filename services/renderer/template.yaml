@@ -16,7 +16,7 @@ Globals:
   Function:
     Timeout: 20
     MemorySize: 256
-    Runtime: java11
+    Runtime: java21
     Architectures:
       - x86_64
     Environment:
@@ -34,6 +34,8 @@ Resources:
       Description: PlantUML JAR and Graphviz binaries
       ContentUri: layers/plantuml-layer/
       CompatibleRuntimes:
+        - java21
+        - java17
         - java11
       CompatibleArchitectures:
         - x86_64

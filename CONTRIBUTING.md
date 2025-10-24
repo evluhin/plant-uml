@@ -7,7 +7,7 @@ Thank you for your interest in contributing to the PlantUML Confluence Cloud app
 ### Prerequisites
 
 - Node.js 20+ and pnpm 8+
-- AWS CLI configured
+- AWS CLI configured with profile `plant-uml`
 - Forge CLI: `npm install -g @forge/cli`
 - Git with SSH keys configured
 

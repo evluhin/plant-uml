@@ -152,14 +152,16 @@ aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-dev" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
-  --description "JWT secret for PlantUML renderer - DEV"
+  --description "JWT secret for PlantUML renderer - DEV" \
+  --profile plant-uml
 
 # Production secret (different value!)
 aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-prod" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
-  --description "JWT secret for PlantUML renderer - PROD"
+  --description "JWT secret for PlantUML renderer - PROD" \
+  --profile plant-uml
 ```
 
 #### 2. Configure Forge Environment Variables
@@ -170,22 +172,26 @@ DEV_SECRET=$(aws ssm get-parameter \
   --name "/plantuml/renderer/jwt-secret-dev" \
   --with-decryption \
   --query 'Parameter.Value' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 PROD_SECRET=$(aws ssm get-parameter \
   --name "/plantuml/renderer/jwt-secret-prod" \
   --with-decryption \
   --query 'Parameter.Value' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 
 # Get renderer API URLs
 DEV_URL=$(aws cloudformation describe-stacks \
   --stack-name plantuml-renderer-dev \
   --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 PROD_URL=$(aws cloudformation describe-stacks \
   --stack-name plantuml-renderer-prod \
   --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 
 # Set in Forge environments
 cd apps/forge-plantuml
@@ -265,10 +271,11 @@ npx @forge/cli install --product confluence --environment production
 aws cloudformation list-stacks \
   --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE \
   --query 'StackSummaries[?contains(StackName, `plantuml`)].{Name:StackName,Status:StackStatus}' \
-  --output table
+  --output table \
+  --profile plant-uml
 
 # Delete conflicting stack if needed
-aws cloudformation delete-stack --stack-name plantuml-renderer
+aws cloudformation delete-stack --stack-name plantuml-renderer --profile plant-uml
 # Wait for deletion, then retry deployment
 ```
 
@@ -281,16 +288,18 @@ Current performance: ~5s cold start with 256MB memory allocation.
 ```bash
 # Check SnapStart status
 aws lambda get-function --function-name plantuml-renderer-prod \
-  --query 'Configuration.SnapStart'
+  --query 'Configuration.SnapStart' \
+  --profile plant-uml
 
 # Check if alias exists and points to correct version
-aws lambda get-alias --function-name plantuml-renderer-prod --name live
+aws lambda get-alias --function-name plantuml-renderer-prod --name live --profile plant-uml
 
 # Check CloudWatch logs for INIT_START vs RESTORE_START
 aws logs filter-log-events \
   --log-group-name /aws/lambda/plantuml-renderer-prod \
   --filter-pattern "INIT_START" \
-  --start-time $(date -d '1 hour ago' +%s)000
+  --start-time $(date -d '1 hour ago' +%s)000 \
+  --profile plant-uml
 ```
 
 **Expected behavior:**
@@ -302,16 +311,17 @@ aws logs filter-log-events \
 
 ```bash
 # Publish new version
-aws lambda publish-version --function-name plantuml-renderer-prod
+aws lambda publish-version --function-name plantuml-renderer-prod --profile plant-uml
 
 # Check/create alias
-aws lambda get-alias --function-name plantuml-renderer-prod --name live
+aws lambda get-alias --function-name plantuml-renderer-prod --name live --profile plant-uml
 
 # If alias doesn't exist, create it
 aws lambda create-alias \
   --function-name plantuml-renderer-prod \
   --name live \
-  --function-version $LATEST_VERSION
+  --function-version $LATEST_VERSION \
+  --profile plant-uml
 
 # Redeploy SAM to use alias
 sam deploy --config-env prod
@@ -329,7 +339,7 @@ sam deploy --config-env prod
 
 1. Check JWT secret exists in SSM:
    ```bash
-   aws ssm get-parameter --name "/plantuml/renderer/jwt-secret-prod"
+   aws ssm get-parameter --name "/plantuml/renderer/jwt-secret-prod" --profile plant-uml
    ```
 2. Verify Forge has same secret:
    ```bash
@@ -367,7 +377,7 @@ npx @forge/cli logs --tail
 sam validate --template template.yaml
 
 # Check CloudFormation stack status
-aws cloudformation describe-stacks --stack-name plantuml-renderer-dev
+aws cloudformation describe-stacks --stack-name plantuml-renderer-dev --profile plant-uml
 ```
 
 ## 📊 Performance
@@ -490,7 +500,8 @@ aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-prod" \
   --value "$PROD_SECRET" \
   --type "SecureString" \
-  --overwrite
+  --overwrite \
+  --profile plant-uml
 
 cd apps/forge-plantuml
 npx @forge/cli variables set RENDERER_JWT_SECRET "$PROD_SECRET" --environment production
@@ -502,7 +513,8 @@ aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-dev" \
   --value "$DEV_SECRET" \
   --type "SecureString" \
-  --overwrite
+  --overwrite \
+  --profile plant-uml
 
 npx @forge/cli variables set RENDERER_JWT_SECRET "$DEV_SECRET" --environment development
 npx @forge/cli deploy --environment development
