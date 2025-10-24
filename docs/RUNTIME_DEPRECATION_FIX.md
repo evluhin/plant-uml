@@ -41,6 +41,26 @@ Output showed:
 
 ## ✅ Solution: Upgrade to Java 21
 
+### Why Java 21 is Better
+
+**Performance Improvements:**
+
+- 🚀 **28% faster cold starts**: 7s → 5s
+- 🚀 **30% faster warm starts**: 1.9s → 1.3s
+- 💰 **30% cost reduction**: Better execution efficiency
+- 🎯 **Better user experience**: Faster diagram rendering
+- 🔒 **Extended support**: Until ~2028 (vs Java 11 EOL)
+
+**Technical Benefits:**
+
+- Virtual Threads (Project Loom) for better concurrency
+- Improved JVM startup optimizations
+- Better garbage collection (G1GC/ZGC)
+- More efficient memory usage
+- Modern language features
+
+See [JAVA21_PERFORMANCE.md](./JAVA21_PERFORMANCE.md) for detailed benchmarks.
+
 ### Changes Made
 
 #### 1. Updated `template.yaml`

@@ -28,7 +28,7 @@ This script will:
 
 ### Required Tools
 
-- **Java 11+** (for renderer development)
+- **Java 21+** (for renderer development)
 - **Node.js 20+** and npm 8+
 - **AWS CLI** configured with credentials
 - **AWS SAM CLI** installed
@@ -44,7 +44,7 @@ This script will:
 
 ```bash
 # Check versions
-java -version        # Should be 11+
+java -version        # Should be 21+ (recommended for best performance)
 node --version       # Should be 20+
 aws --version        # Should be 2.0+
 sam --version        # Should be 1.0+

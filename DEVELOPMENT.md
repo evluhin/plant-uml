@@ -10,7 +10,7 @@ Complete guide for developing, testing, and deploying the PlantUML Confluence ap
 
 ### Prerequisites
 
-- **Java 11+** (for renderer development)
+- **Java 21+** (for renderer development)
 - **Node.js 20+** and npm 8+
 - **AWS CLI** configured with appropriate permissions
 - **AWS SAM CLI** installed and working
@@ -350,7 +350,7 @@ sam deploy --config-env prod
 #### "PlantUML rendering failed"
 
 - Check PlantUML layer deployment in CloudFormation
-- Verify Java 11 runtime configuration
+- Verify Java 21 runtime configuration
 - Check CloudWatch logs for detailed error messages
 
 #### "SAM deploy failed - S3 bucket not specified"
@@ -440,7 +440,7 @@ Request → API Gateway → Node.js Auth (100ms) → Java Renderer (5s)
 
 ### Code Standards
 
-- **Java 11** with Maven for renderer service
+- **Java 21** with Maven for renderer service
 - **React** with Forge UI Kit components for frontend
 - **JWT HS256** authentication with 60s TTL
 - **SVG output** format for diagrams
