@@ -1,5 +1,7 @@
 # Setup Guide
 
+> **Deploying to a new AWS account?** See [docs/ONPREMISE_DEPLOYMENT.md](./docs/ONPREMISE_DEPLOYMENT.md) for a complete, universal deployment guide that works on any fresh AWS account with parametric variables. The guide below is for returning developers with an existing environment.
+
 Complete setup guide for PlantUML Confluence Cloud App - local development, development environment, and production deployment.
 
 ## 🚀 Automated Setup (Recommended)

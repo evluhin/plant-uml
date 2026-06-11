@@ -73,6 +73,7 @@ cd plant-uml-confluence
 | Document                                                             | Purpose                                    |
 | -------------------------------------------------------------------- | ------------------------------------------ |
 | [SETUP.md](./SETUP.md)                                               | Complete setup guide (local, dev, prod)    |
+| [docs/ONPREMISE_DEPLOYMENT.md](./docs/ONPREMISE_DEPLOYMENT.md)       | On-premise deployment for any AWS account  |
 | [DEVELOPMENT.md](./DEVELOPMENT.md)                                   | Development workflow and troubleshooting   |
 | [SECURITY.md](./SECURITY.md)                                         | Security architecture & threat model       |
 | [CONTRIBUTING.md](./CONTRIBUTING.md)                                 | Development standards & contribution guide |

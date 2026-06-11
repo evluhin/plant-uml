@@ -1,5 +1,5 @@
 {
-  "rendererUrl": "https://gezrf8c2xa.execute-api.eu-north-1.amazonaws.com/prod",
+  "rendererUrl": "https://sj8aeemcj2.execute-api.eu-north-1.amazonaws.com/prod",
   "environment": "production",
   "awsRegion": "eu-north-1",
   "jwtSecretParameter": "/plantuml/renderer/jwt-secret-prod"
