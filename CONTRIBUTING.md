@@ -5,12 +5,14 @@ Thank you for your interest in contributing to the PlantUML Confluence Cloud app
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and pnpm 8+
-- AWS CLI configured
+
+- Node.js 20+ and pnpm 8+
+- AWS CLI configured with profile `plant-uml`
 - Forge CLI: `npm install -g @forge/cli`
 - Git with SSH keys configured
 
 ### Setup Development Environment
+
 ```bash
 # Clone repository
 git clone git@github.com:yourorg/plantuml-confluence.git
@@ -29,7 +31,9 @@ pnpm test
 ## 🏗️ Development Workflow
 
 ### Branch Strategy
+
 We use **Git Flow** with the following branches:
+
 - `main`: Production-ready code
 - `develop`: Integration branch for features
 - `feature/*`: New features and enhancements
@@ -37,6 +41,7 @@ We use **Git Flow** with the following branches:
 - `release/*`: Release preparation
 
 ### Creating a Feature Branch
+
 ```bash
 # Start from develop branch
 git checkout develop
@@ -57,6 +62,7 @@ git push origin feature/your-feature-name
 ```
 
 ### Commit Message Convention
+
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
@@ -68,6 +74,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 #### Types
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -79,6 +86,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `perf`: Performance improvements
 
 #### Examples
+
 ```bash
 feat(editor): add syntax highlighting for PlantUML
 fix(renderer): handle timeout errors gracefully
@@ -89,6 +97,7 @@ test(jwt): add unit tests for token verification
 ## 🧪 Testing
 
 ### Running Tests
+
 ```bash
 # All tests
 pnpm test
@@ -107,11 +116,13 @@ pnpm test:integration
 ```
 
 ### Test Coverage
+
 - Maintain >80% code coverage
 - All new features must include tests
 - Bug fixes must include regression tests
 
 ### Test Structure
+
 ```
 src/
 ├── __tests__/           # Unit tests
@@ -130,6 +141,7 @@ tests/
 ## 🎨 Code Style
 
 ### TypeScript Guidelines
+
 - Use strict TypeScript configuration
 - Prefer explicit types over `any`
 - Use meaningful variable and function names
@@ -143,16 +155,13 @@ tests/
  * @param theme - Optional theme name
  * @returns 16-character hash string
  */
-export function generateAttachmentHash(
-  source: string,
-  format: string,
-  theme?: string
-): string {
+export function generateAttachmentHash(source: string, format: string, theme?: string): string {
   // Implementation...
 }
 ```
 
 ### Svelte Guidelines
+
 - Use TypeScript in script blocks
 - Prefer composition over inheritance
 - Keep components focused and small
@@ -161,26 +170,27 @@ export function generateAttachmentHash(
 ```svelte
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  
+
   export let value: string;
-  
+
   const dispatch = createEventDispatcher<{ change: string }>();
-  
+
   function handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     dispatch('change', target.value);
   }
 </script>
 
-<input 
-  type="text" 
-  {value} 
+<input
+  type="text"
+  {value}
   on:input={handleInput}
   aria-label="PlantUML source input"
 />
 ```
 
 ### Formatting
+
 - Use Prettier for consistent formatting
 - ESLint for code quality
 - Pre-commit hooks enforce standards
@@ -199,6 +209,7 @@ pnpm lint --fix
 ## 🔍 Code Review Process
 
 ### Pull Request Guidelines
+
 1. **Title**: Use conventional commit format
 2. **Description**: Explain what and why
 3. **Testing**: Include test results
@@ -206,25 +217,31 @@ pnpm lint --fix
 5. **Breaking Changes**: Document any breaking changes
 
 ### PR Template
+
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] E2E tests pass
 - [ ] Manual testing completed
 
 ## Screenshots (if applicable)
+
 [Add screenshots for UI changes]
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Tests added/updated
@@ -232,6 +249,7 @@ Brief description of changes
 ```
 
 ### Review Criteria
+
 - **Functionality**: Does it work as intended?
 - **Code Quality**: Is it readable and maintainable?
 - **Performance**: Any performance implications?
@@ -242,17 +260,20 @@ Brief description of changes
 ## 🐛 Bug Reports
 
 ### Before Reporting
+
 1. Check existing issues
 2. Reproduce the bug
 3. Test with latest version
 4. Gather system information
 
 ### Bug Report Template
+
 ```markdown
 **Bug Description**
 Clear description of the bug
 
 **Steps to Reproduce**
+
 1. Go to '...'
 2. Click on '...'
 3. See error
@@ -264,6 +285,7 @@ What should happen
 What actually happens
 
 **Environment**
+
 - OS: [e.g., macOS 12.0]
 - Browser: [e.g., Chrome 96]
 - Confluence Version: [e.g., Cloud]
@@ -276,6 +298,7 @@ Screenshots, logs, etc.
 ## 💡 Feature Requests
 
 ### Feature Request Template
+
 ```markdown
 **Feature Description**
 Clear description of the feature
@@ -296,6 +319,7 @@ Mockups, examples, etc.
 ## 🏗️ Architecture Guidelines
 
 ### Forge App Structure
+
 ```
 apps/forge-plantuml/
 ├── src/
@@ -308,6 +332,7 @@ apps/forge-plantuml/
 ```
 
 ### Renderer Service Structure
+
 ```
 services/renderer/
 ├── src/
@@ -319,6 +344,7 @@ services/renderer/
 ```
 
 ### Design Principles
+
 - **Separation of Concerns**: Clear boundaries between components
 - **Single Responsibility**: Each module has one purpose
 - **Dependency Injection**: Avoid tight coupling
@@ -328,13 +354,16 @@ services/renderer/
 ## 🚀 Release Process
 
 ### Version Numbering
+
 We use [Semantic Versioning](https://semver.org/):
+
 - `MAJOR.MINOR.PATCH`
 - `MAJOR`: Breaking changes
 - `MINOR`: New features (backward compatible)
 - `PATCH`: Bug fixes (backward compatible)
 
 ### Release Checklist
+
 - [ ] All tests passing
 - [ ] Documentation updated
 - [ ] CHANGELOG.md updated
@@ -343,22 +372,27 @@ We use [Semantic Versioning](https://semver.org/):
 - [ ] Performance testing completed
 
 ### Release Notes Template
+
 ```markdown
 ## [1.2.0] - 2024-01-15
 
 ### Added
+
 - New theme support for diagrams
 - Keyboard shortcuts for editor
 
 ### Changed
+
 - Improved error handling
 - Updated dependencies
 
 ### Fixed
+
 - Fixed rendering timeout issue
 - Resolved CORS configuration
 
 ### Security
+
 - Updated JWT validation
 - Enhanced input sanitization
 ```
@@ -366,12 +400,14 @@ We use [Semantic Versioning](https://semver.org/):
 ## 📚 Documentation
 
 ### Documentation Types
+
 - **README**: Project overview and setup
 - **API Docs**: Generated from code comments
 - **User Guide**: End-user documentation
 - **Developer Guide**: Technical documentation
 
 ### Writing Guidelines
+
 - Use clear, concise language
 - Include code examples
 - Add screenshots for UI features
@@ -380,12 +416,15 @@ We use [Semantic Versioning](https://semver.org/):
 ## 🤝 Community
 
 ### Communication Channels
+
 - **GitHub Issues**: Bug reports and feature requests
 - **GitHub Discussions**: General questions and ideas
 - **Email**: security@yourcompany.com (security issues)
 
 ### Code of Conduct
+
 We follow the [Contributor Covenant](https://www.contributor-covenant.org/):
+
 - Be respectful and inclusive
 - Focus on constructive feedback
 - Help others learn and grow
@@ -394,12 +433,14 @@ We follow the [Contributor Covenant](https://www.contributor-covenant.org/):
 ## 🎯 Getting Help
 
 ### Common Issues
+
 - **Setup Problems**: Check prerequisites and environment
 - **Test Failures**: Ensure all dependencies installed
 - **Build Errors**: Check Node.js and pnpm versions
 - **Forge Issues**: Verify Forge CLI authentication
 
 ### Support Channels
+
 1. Check existing GitHub issues
 2. Search documentation
 3. Ask in GitHub Discussions

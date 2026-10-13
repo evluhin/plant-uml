@@ -1,5 +1,7 @@
 # Setup Guide
 
+> **Deploying to a new AWS account?** See [docs/ONPREMISE_DEPLOYMENT.md](./docs/ONPREMISE_DEPLOYMENT.md) for a complete, universal deployment guide that works on any fresh AWS account with parametric variables. The guide below is for returning developers with an existing environment.
+
 Complete setup guide for PlantUML Confluence Cloud App - local development, development environment, and production deployment.
 
 ## 🚀 Automated Setup (Recommended)
@@ -28,8 +30,8 @@ This script will:
 
 ### Required Tools
 
-- **Java 11+** (for renderer development)
-- **Node.js 18+** and npm 8+
+- **Java 21+** (for renderer development)
+- **Node.js 20+** and npm 8+
 - **AWS CLI** configured with credentials
 - **AWS SAM CLI** installed
 - **Forge CLI**: `npm install -g @forge/cli`
@@ -44,14 +46,14 @@ This script will:
 
 ```bash
 # Check versions
-java -version        # Should be 11+
-node --version       # Should be 18+
+java -version        # Should be 21+ (recommended for best performance)
+node --version       # Should be 20+
 aws --version        # Should be 2.0+
 sam --version        # Should be 1.0+
 forge --version      # Should be latest
 
 # Check AWS credentials
-aws sts get-caller-identity
+aws sts get-caller-identity --profile plant-uml
 ```
 
 ## 🔧 Manual Setup
@@ -71,7 +73,7 @@ npm install
 export AWS_DEFAULT_REGION=eu-north-1
 
 # Verify AWS CLI is configured
-aws sts get-caller-identity
+aws sts get-caller-identity --profile plant-uml
 ```
 
 ### 3. Create JWT Secrets
@@ -82,14 +84,16 @@ aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-dev" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
-  --description "JWT secret for PlantUML renderer - DEV"
+  --description "JWT secret for PlantUML renderer - DEV" \
+  --profile plant-uml
 
 # Production secret (different value!)
 aws ssm put-parameter \
   --name "/plantuml/renderer/jwt-secret-prod" \
   --value "$(openssl rand -base64 32)" \
   --type "SecureString" \
-  --description "JWT secret for PlantUML renderer - PROD"
+  --description "JWT secret for PlantUML renderer - PROD" \
+  --profile plant-uml
 ```
 
 ### 4. Deploy AWS Lambda Services
@@ -105,7 +109,8 @@ sam deploy --config-env dev
 DEV_URL=$(aws cloudformation describe-stacks \
   --stack-name plantuml-renderer-dev \
   --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 echo "Development API URL: $DEV_URL"
 ```
 
@@ -118,7 +123,8 @@ sam deploy --config-env prod
 PROD_URL=$(aws cloudformation describe-stacks \
   --stack-name plantuml-renderer-prod \
   --query 'Stacks[0].Outputs[?OutputKey==`RendererApiUrl`].OutputValue' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 echo "Production API URL: $PROD_URL"
 ```
 
@@ -151,7 +157,8 @@ DEV_SECRET=$(aws ssm get-parameter \
   --name "/plantuml/renderer/jwt-secret-dev" \
   --with-decryption \
   --query 'Parameter.Value' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 
 # Set Forge environment variables
 forge variables set RENDERER_JWT_SECRET "$DEV_SECRET" --environment development
@@ -172,7 +179,8 @@ PROD_SECRET=$(aws ssm get-parameter \
   --name "/plantuml/renderer/jwt-secret-prod" \
   --with-decryption \
   --query 'Parameter.Value' \
-  --output text)
+  --output text \
+  --profile plant-uml)
 
 # Set Forge environment variables
 forge variables set RENDERER_JWT_SECRET "$PROD_SECRET" --environment production
@@ -289,10 +297,10 @@ cd services/renderer
 
 ```bash
 # Check existing stacks
-aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE
+aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE --profile plant-uml
 
 # Delete conflicting stack if needed
-aws cloudformation delete-stack --stack-name plantuml-renderer-dev
+aws cloudformation delete-stack --stack-name plantuml-renderer-dev --profile plant-uml
 # Wait for deletion, then retry deployment
 ```
 
@@ -303,7 +311,7 @@ aws cloudformation delete-stack --stack-name plantuml-renderer-dev
 
    ```bash
    # Check AWS SSM
-   aws ssm get-parameter --name "/plantuml/renderer/jwt-secret-dev"
+   aws ssm get-parameter --name "/plantuml/renderer/jwt-secret-dev" --profile plant-uml
 
    # Check Forge variables
    forge variables list --environment development
@@ -350,7 +358,7 @@ cd apps/forge-plantuml
 forge logs --tail
 
 # Check CloudFormation stack
-aws cloudformation describe-stacks --stack-name plantuml-renderer-dev
+aws cloudformation describe-stacks --stack-name plantuml-renderer-dev --profile plant-uml
 
 # Test local SAM API
 cd services/renderer

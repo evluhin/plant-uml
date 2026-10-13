@@ -9,7 +9,7 @@ The PlantUML Confluence Cloud App has been successfully developed, deployed, and
 ### 🏗️ **Complete Application Development**
 
 - **Forge App**: React-based PlantUML macro with live editing and caching
-- **AWS Lambda Renderer**: Java 11 service with PlantUML + Graphviz
+- **AWS Lambda Renderer**: Java 21 service with PlantUML + Graphviz
 - **Node.js Authorizer**: JWT validation with 1-hour API Gateway caching
 - **Security**: Environment-specific JWT secrets, input validation, output sanitization
 

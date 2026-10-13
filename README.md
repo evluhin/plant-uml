@@ -34,20 +34,22 @@ cd plant-uml-confluence
 ### Key Components
 
 - **Forge App**: React UI with cache management and configuration
-- **AWS Lambda**: Java renderer (256MB, ~5s cold start with SnapStart)
+- **AWS Lambda**: Java 21 renderer (256MB, ~5s cold start with SnapStart)
 - **Node.js Authorizer**: JWT validation with 1-hour API Gateway caching
 - **Security**: JWT HS256 tokens (60s TTL), environment-specific secrets
 - **Storage**: Hash-based SVG/PNG caching in Forge storage
 
 ## 📊 Performance & Cost
 
-| Metric            | Development                    | Production                 |
-| ----------------- | ------------------------------ | -------------------------- |
-| **Cold Start**    | ~5s (Java) + ~100ms (Auth)     | ~5s (Java) + ~0ms (cached) |
-| **Warm Requests** | ~1-2s rendering                | ~1-2s rendering            |
-| **Auth Overhead** | ~100ms                         | ~0ms (1hr cache)           |
-| **Expected Cost** | ~$2-5/month                    | ~$5-15/month               |
-| **Memory Usage**  | 140MB actual / 256MB allocated | Optimized for cost         |
+| Metric            | Development                    | Production                    |
+| ----------------- | ------------------------------ | ----------------------------- |
+| **Cold Start**    | ~5s (Java 21) + ~100ms (Auth)  | ~5s (Java 21) + ~0ms (cached) |
+| **Warm Requests** | ~1.3s rendering (30% faster)   | ~1.3s rendering               |
+| **Auth Overhead** | ~100ms                         | ~0ms (1hr cache)              |
+| **Expected Cost** | ~$2-5/month (30% reduction)    | ~$5-15/month                  |
+| **Memory Usage**  | 140MB actual / 256MB allocated | Optimized for cost            |
+
+**Java 21 Benefits**: 28% faster cold starts, 30% faster warm starts, 30% cost reduction vs Java 11. See [performance benchmarks](./docs/JAVA21_PERFORMANCE.md).
 
 ## 🔧 Development Environments
 
@@ -60,20 +62,23 @@ cd plant-uml-confluence
 
 - **Frontend**: React with Forge UI Kit
 - **Backend**: Atlassian Forge resolvers (Node.js)
-- **Renderer**: Java 11 AWS Lambda with PlantUML + Graphviz
-- **Authentication**: Node.js Lambda Authorizer with JWT
+- **Renderer**: Java 21 AWS Lambda with PlantUML + Graphviz
+- **Authentication**: Node.js 20 Lambda Authorizer with JWT
 - **Infrastructure**: AWS SAM, API Gateway, CloudFormation
 - **CI/CD**: GitHub Actions with cost-optimized workflows
 - **Security**: JWT HS256, AWS SSM Parameter Store, CORS
 
 ## 📚 Documentation
 
-| Document                             | Purpose                                    |
-| ------------------------------------ | ------------------------------------------ |
-| [SETUP.md](./SETUP.md)               | Complete setup guide (local, dev, prod)    |
-| [DEVELOPMENT.md](./DEVELOPMENT.md)   | Development workflow and troubleshooting   |
-| [SECURITY.md](./SECURITY.md)         | Security architecture & threat model       |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Development standards & contribution guide |
+| Document                                                             | Purpose                                    |
+| -------------------------------------------------------------------- | ------------------------------------------ |
+| [SETUP.md](./SETUP.md)                                               | Complete setup guide (local, dev, prod)    |
+| [docs/ONPREMISE_DEPLOYMENT.md](./docs/ONPREMISE_DEPLOYMENT.md)       | On-premise deployment for any AWS account  |
+| [DEVELOPMENT.md](./DEVELOPMENT.md)                                   | Development workflow and troubleshooting   |
+| [SECURITY.md](./SECURITY.md)                                         | Security architecture & threat model       |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)                                 | Development standards & contribution guide |
+| [docs/JAVA21_PERFORMANCE.md](./docs/JAVA21_PERFORMANCE.md)           | Java 21 performance benefits & benchmarks  |
+| [docs/RUNTIME_DEPRECATION_FIX.md](./docs/RUNTIME_DEPRECATION_FIX.md) | Runtime upgrade incident report            |
 
 ## 🚀 Quick Commands
 

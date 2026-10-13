@@ -1,0 +1,308 @@
+# GitLab CI/CD Pipeline for PlantUML Confluence Cloud
+#
+# This pipeline is functionally equivalent to the GitHub Actions workflows.
+# Copy this file to `.gitlab-ci.yml` in your repository root.
+#
+# Required GitLab CI/CD Variables (Settings → CI/CD → Variables):
+#
+# Secrets (Protected + Masked):
+#   - AWS_ACCESS_KEY_ID: IAM user access key for deployments
+#   - AWS_SECRET_ACCESS_KEY: IAM user secret access key
+#   - FORGE_API_TOKEN: Atlassian Forge API token
+#
+# Variables (not masked):
+#   - AWS_REGION: AWS region (e.g., eu-north-1)
+#   - FORGE_EMAIL: Atlassian account email for Forge
+#   - RENDERER_URL_DEV: Development API Gateway URL
+#   - RENDERER_URL_PROD: Production API Gateway URL
+
+stages:
+  - quality
+  - build
+  - deploy-dev
+  - deploy-prod
+  - verify
+  - security
+
+variables:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '21'
+  SAM_CLI_TELEMETRY: '0'
+
+# Cache npm dependencies across jobs
+.node-cache: &node-cache
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}-node
+    paths:
+      - node_modules/
+      - apps/forge-plantuml/node_modules/
+
+# --- Quality Stage ---
+
+lint:
+  stage: quality
+  image: node:${NODE_VERSION}
+  <<: *node-cache
+  script:
+    - npm ci --prefer-offline --no-audit
+    - npm run lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "master"
+
+test:
+  stage: quality
+  image: node:${NODE_VERSION}
+  <<: *node-cache
+  script:
+    - npm ci --prefer-offline --no-audit
+    - npm run test
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "master"
+
+# --- Build Stage ---
+
+build-sam:
+  stage: build
+  image: public.ecr.aws/sam/build-java21:latest
+  script:
+    - cd services/renderer
+    - sam build --cached
+  artifacts:
+    paths:
+      - services/renderer/.aws-sam/
+    expire_in: 1 hour
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      changes:
+        - services/renderer/**/*
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - services/renderer/**/*
+
+build-forge:
+  stage: build
+  image: node:${NODE_VERSION}
+  <<: *node-cache
+  script:
+    - npm ci --prefer-offline --no-audit
+    - cd apps/forge-plantuml
+    - npm run build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      changes:
+        - apps/forge-plantuml/**/*
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - apps/forge-plantuml/**/*
+
+# --- Deploy Dev Stage (auto on develop push) ---
+
+deploy-aws-dev:
+  stage: deploy-dev
+  image: public.ecr.aws/sam/build-java21:latest
+  needs:
+    - job: build-sam
+      artifacts: true
+    - job: lint
+    - job: test
+  before_script:
+    - pip install aws-sam-cli
+  script:
+    - cd services/renderer
+    - |
+      if ! sam deploy \
+        --config-env dev \
+        --no-confirm-changeset \
+        --region $AWS_REGION \
+        --stack-name plantuml-renderer-dev \
+        --resolve-s3 \
+        --capabilities CAPABILITY_IAM 2>&1 | tee deploy_output.log; then
+        if grep -q "No changes to deploy" deploy_output.log; then
+          echo "✅ No changes to deploy - stack is up to date"
+        else
+          echo "❌ Deployment failed"
+          cat deploy_output.log
+          exit 1
+        fi
+      else
+        echo "✅ Deployment successful"
+      fi
+  environment:
+    name: development
+    url: $RENDERER_URL_DEV
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      changes:
+        - services/renderer/**/*
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+
+deploy-forge-dev:
+  stage: deploy-dev
+  image: node:${NODE_VERSION}
+  needs:
+    - job: build-forge
+      artifacts: true
+    - job: lint
+    - job: test
+  script:
+    - npm install -g @forge/cli@latest
+    - cd apps/forge-plantuml
+    - npm ci --ignore-scripts
+    - forge deploy --environment development --non-interactive --no-verify
+  environment:
+    name: development
+  variables:
+    FORGE_DISABLE_ANALYTICS: 'true'
+    CI: 'true'
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      changes:
+        - apps/forge-plantuml/**/*
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: manual
+      allow_failure: true
+
+# --- Deploy Prod Stage (manual trigger only) ---
+
+deploy-aws-prod:
+  stage: deploy-prod
+  image: public.ecr.aws/sam/build-java21:latest
+  needs:
+    - job: lint
+    - job: test
+  before_script:
+    - pip install aws-sam-cli
+  script:
+    - cd services/renderer
+    - sam build --cached
+    - |
+      if ! sam deploy \
+        --config-env prod \
+        --no-confirm-changeset \
+        --region $AWS_REGION \
+        --stack-name plantuml-renderer-prod \
+        --resolve-s3 \
+        --capabilities CAPABILITY_IAM 2>&1 | tee deploy_output.log; then
+        if grep -q "No changes to deploy" deploy_output.log; then
+          echo "✅ No changes to deploy - stack is up to date"
+        else
+          echo "❌ Deployment failed"
+          cat deploy_output.log
+          exit 1
+        fi
+      else
+        echo "✅ Deployment successful"
+      fi
+  environment:
+    name: production
+    url: $RENDERER_URL_PROD
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  allow_failure: false
+
+deploy-forge-prod:
+  stage: deploy-prod
+  image: node:${NODE_VERSION}
+  needs:
+    - job: lint
+    - job: test
+  script:
+    - npm install -g @forge/cli@latest
+    - cd apps/forge-plantuml
+    - npm ci --ignore-scripts
+    - forge deploy --environment production --non-interactive --no-verify
+  environment:
+    name: production
+  variables:
+    FORGE_DISABLE_ANALYTICS: 'true'
+    CI: 'true'
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  allow_failure: false
+
+# --- Verify Stage ---
+
+smoke-test-dev:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy-aws-dev
+      optional: true
+    - job: deploy-forge-dev
+      optional: true
+  script:
+    - sleep 30
+    - |
+      echo "Testing health endpoint..."
+      RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$RENDERER_URL_DEV/health")
+      if [ "$RESPONSE" = "200" ]; then
+        echo "✅ Health check passed"
+      else
+        echo "❌ Health check failed (HTTP $RESPONSE)"
+        exit 1
+      fi
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+
+smoke-test-prod:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy-aws-prod
+      optional: true
+    - job: deploy-forge-prod
+      optional: true
+  script:
+    - sleep 30
+    - |
+      echo "Testing health endpoint..."
+      RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$RENDERER_URL_PROD/health")
+      if [ "$RESPONSE" = "200" ]; then
+        echo "✅ Health check passed"
+      else
+        echo "❌ Health check failed (HTTP $RESPONSE)"
+        exit 1
+      fi
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+
+# --- Security Stage (weekly schedule) ---
+
+dependency-scan:
+  stage: security
+  image: node:${NODE_VERSION}
+  <<: *node-cache
+  script:
+    - npm ci
+    - npm audit --audit-level=high || true
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+sast:
+  stage: security
+  include:
+    - template: Security/SAST.gitlab-ci.yml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

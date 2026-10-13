@@ -14,9 +14,9 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 20
+    Timeout: 30
     MemorySize: 256
-    Runtime: java11
+    Runtime: java21
     Architectures:
       - x86_64
     Environment:
@@ -34,6 +34,8 @@ Resources:
       Description: PlantUML JAR and Graphviz binaries
       ContentUri: layers/plantuml-layer/
       CompatibleRuntimes:
+        - java21
+        - java17
         - java11
       CompatibleArchitectures:
         - x86_64
@@ -47,7 +49,7 @@ Resources:
       FunctionName: !Sub plantuml-authorizer-${Environment}
       CodeUri: authorizer/
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Timeout: 10
       MemorySize: 128
       Policies:
@@ -89,8 +91,7 @@ Resources:
             ApiId: !Ref RendererApi
             Path: /health
             Method: get
-      VersionDescription: !Sub "Version deployed at ${AWS::StackName}"
-
+      VersionDescription: !Sub 'Version deployed at ${AWS::StackName}'
 
   # HTTP API Gateway
   RendererApi:
@@ -105,12 +106,12 @@ Resources:
             Identity:
               Headers:
                 - Authorization
-            AuthorizerPayloadFormatVersion: "1.0"
+            AuthorizerPayloadFormatVersion: '1.0'
             EnableSimpleResponses: false
             AuthorizerResultTtlInSeconds: 3600
       CorsConfiguration:
         AllowOrigins:
-          - "*"
+          - '*'
         AllowHeaders:
           - Content-Type
           - Authorization
@@ -150,16 +151,16 @@ Resources:
 Outputs:
   RendererApiUrl:
     Description: API Gateway endpoint URL
-    Value: !Sub "https://${RendererApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"
+    Value: !Sub 'https://${RendererApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}'
     Export:
       Name: !Sub plantuml-renderer-url-${Environment}
-  
+
   FunctionArn:
     Description: Lambda Function ARN
     Value: !GetAtt RendererFunction.Arn
     Export:
       Name: !Sub plantuml-renderer-arn-${Environment}
-  
+
   FunctionAliasArn:
     Description: Lambda Function Alias ARN (for SnapStart)
     Value: !Ref RendererFunction.Alias

@@ -60,15 +60,15 @@ check_prerequisites() {
     # Check Node.js
     if command_exists node; then
         NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
-        if [ "$NODE_VERSION" -ge 18 ]; then
+        if [ "$NODE_VERSION" -ge 20 ]; then
             log_success "Node.js v$NODE_VERSION found"
         else
-            log_error "Node.js 18+ required, found v$NODE_VERSION"
-            missing_tools+=("nodejs-18+")
+            log_error "Node.js 20+ required, found v$NODE_VERSION"
+            missing_tools+=("nodejs-20+")
         fi
     else
         log_error "Node.js not found"
-        missing_tools+=("nodejs-18+")
+        missing_tools+=("nodejs-20+")
     fi
     
     # Check AWS CLI

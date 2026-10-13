@@ -174,3 +174,6 @@ quick-test.sh
 *.tar.gz
 *.rar
 *.7z
+
+# Kiro IDE settings (local)
+.kiro/settings/
